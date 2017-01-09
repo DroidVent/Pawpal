@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@mipmap/dashboard"
+            android:title="@string/dashboard" />
+        <item
+            android:id="@+id/nav_find_pal"
+            android:icon="@mipmap/icon_findpal"
+            android:title="@string/findpal" />
+        <item
+            android:id="@+id/nav_messages"
+            android:icon="@mipmap/messages"
+            android:title="@string/messages">
+
+        </item>
+        <item
+            android:id="@+id/nav_pawfile"
+            android:icon="@mipmap/icon_pawfile_menu"
+            android:title="Pawfile" />
+        <item
+            android:id="@+id/signout"
+            android:icon="@mipmap/signout"
+            android:title="Sign Out" />
+
+    </group>
+
+</menu>

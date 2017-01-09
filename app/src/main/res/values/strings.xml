@@ -1,0 +1,110 @@
+<resources>
+    <string name="app_name">PawPal</string>
+    <string name="login">Login</string>
+    <string name="email">Email*</string>
+    <string name="password">Password*</string>
+    <string name="email_invalid">Invalid Email</string>
+    <string name="password_invalid">Password required</string>
+    <string name="wrong">Something went wrong</string>
+    <string name="network_unavailable">Please check internet connection</string>
+    <string name="create_account">Create Account</string>
+    <string name="signin">Sign In</string>
+    <string name="step1">Step 1</string>
+    <string name="registration">Registration</string>
+    <string name="profile">Profile</string>
+    <string name="your_details">Your Details</string>
+    <string name="name">Name*</string>
+    <string name="user_type">user type</string>
+    <string name="nickname">Nickname*</string>
+    <string name="phone">Phone*</string>
+    <string name="city">City*</string>
+    <string name="country">Country*</string>
+    <string name="makani_number">Makani Number</string>
+    <string name="set_password">Set a password</string>
+    <string name="confirm_password">Confirm Password*</string>
+    <string name="age_text">I\'m 18 years old</string>
+    <string name="address">Address</string>
+    <string name="type_address">Type Address</string>
+    <string name="search">Search</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="location_instructions">Write a direction in the fields and the map will try to find the exact position. If you prefer, you can also use map control to get the best position on the map.</string>
+    <string name="terms">I agree to the terms and conditions</string>
+    <string name="google_maps_key">AIzaSyDenqrCcB-6KMG2MO0Ca5hnJX1qLmHunLE</string>
+    <string name="step2">Step 2</string>
+    <string name="creat_profile">Create your profile</string>
+    <string name="description">Description</string>
+    <string name="dob">Pet\'s Date of birth</string>
+    <string name="pet_size">Pet\'s size allowed</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="email_sent">An email has been sent  to %1$s.It contains an activation link. You must click to activate your account.</string>
+    <string name="confirm_email">Confirm Your Email</string>
+    <string name="activities">Activities</string>
+    <string name="pet_gender">Pet\\\'s Gender Allowed</string>
+    <string name="male">Male</string>
+    <string name="pet_name">Pet Name</string>
+    <string name="save">Save</string>
+    <string name="previous">Previous</string>
+    <string name="pawfile">PawFile</string>
+    <string name="find_match">Find your perfect match today!</string>
+    <string name="new_pals_number">You have 1 new Pals in your area</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="findpal">Find Pal</string>
+    <string name="messages">Messages</string>
+    <string name="exercise">Exercise</string>
+    <string name="filter">Filter</string>
+    <string name="location">Location</string>
+    <string name="age_limit_msg">Your age should be minimum 18 years</string>
+    <string name="create">Create</string>
+    <string name="text_gallery_usage">You did not allow gallery usage!</string>
+    <string name="text_write_usage">You did not allow write permission!</string>
+
+    <array name="icon_viewpager">
+        <item>@mipmap/slider_image1</item>
+        <item>@mipmap/slider_image2</item>
+        <item>@mipmap/slider_image3</item>
+        <item>@mipmap/slider_image4</item>
+    </array>
+
+    <string name="text_camera_usage">You did not allow camera usage!</string>
+    <string name="remeber_me">Remember me</string>
+    <string name="signin_facebook">Sign In with Facebook</string>
+    <string name="no_result_found">No Result Found</string>
+    <string name="inbox">Inbox</string>
+    <string name="sent">Sent</string>
+    <string-array name="petsize_array">
+        <item>Pet\'s Size Allowed</item>
+        <item>Small</item>
+        <item>Extra Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+        <item>Extra Large</item>
+        <item>Very Small</item>
+    </string-array>
+    <string-array name="pet_gender_array">
+        <item>Pet\'s Gender Allowed</item>
+        <item>Male</item>
+        <item>Female</item>
+        <item>Both genders</item>
+    </string-array>
+    <string-array name="pet_host_period_array">
+        <item>Host Period</item>
+        <item>Morning</item>
+        <item>Afternoon</item>
+        <item>Night</item>
+        <item>Weekend</item>
+        <item>Days</item>
+        <item>Just Walk</item>
+    </string-array>
+    <string-array name="pet_frequency_array">
+        <item>Frequency</item>
+        <item>Undetermined</item>
+        <item>Sometimes</item>
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Biweekly</item>
+        <item>Monthly</item>
+    </string-array>
+</resources>

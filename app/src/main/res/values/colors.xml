@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#69C287</color>
+    <color name="colorPrimaryDark">#3f7451</color>
+    <color name="colorAccent">#69C287</color>
+    <color name="green_normal">#69C287</color>
+    <color name="green_pressed">#96d4ab</color>
+    <color name="light_gray_background">#F3F3F3</color>
+    <color name="white">#ffffff</color>
+    <color name="light_blue_color">#4BA1DE</color>
+    <color name="dark_gray">#696969</color>
+    <color name="light_gray">#D3D3D3</color>
+    <color name="fb_normal">#3B5998</color>
+</resources>

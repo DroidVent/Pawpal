@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/parent_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.org.pawpal.custom.CustomTextView
+                android:id="@+id/tv_dob"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@mipmap/txtfield"
+                android:gravity="center_vertical"
+                android:hint="@string/dob"
+                android:padding="10dp"
+                android:textColor="@color/dark_gray"
+                android:textSize="14sp" />
+
+            <com.org.pawpal.custom.CEditText
+                android:id="@+id/et_desc"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@mipmap/txtfield"
+                android:hint="@string/description"
+                android:padding="10dp"
+                android:textColor="@color/dark_gray"
+                android:textSize="14sp" />
+
+            <Spinner
+                android:id="@+id/spinner_size"
+                style="@style/spinner_pet_style" />
+
+            <Spinner
+                android:id="@+id/spinner_gender"
+                style="@style/spinner_pet_gender_style" />
+
+            <Spinner
+                android:id="@+id/spinner_host_period"
+                style="@style/spinner_host_period" />
+
+            <Spinner
+                android:id="@+id/spinner_frequency"
+                style="@style/spinner_frequency" />
+
+            <com.org.pawpal.custom.CustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:hint="@string/activities"
+                android:padding="10dp"
+                android:textColor="@color/dark_gray"
+                android:textSize="14sp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/grid_activities"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+            <Button
+                android:id="@+id/btn_continue"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/round_green_button"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:text="Continue"/>
+        </LinearLayout>
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+</ScrollView>

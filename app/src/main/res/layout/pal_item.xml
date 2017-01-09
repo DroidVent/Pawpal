@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_first"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp">
+    <de.hdodenhof.circleimageview.CircleImageView
+
+        android:id="@+id/profile_image"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:src="@mipmap/slider_image1"
+        app:civ_border_color="@color/light_blue_color"
+        app:civ_border_width="2dp" />
+
+    <com.org.pawpal.custom.CustomTextView
+        android:id="@+id/tv_pal_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_pal_name"
+        android:layout_toRightOf="@+id/profile_image"
+        android:maxLines="2"
+        android:layout_marginLeft="20dp"
+        android:text="Description"
+        android:textAllCaps="false"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:id="@+id/ll_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_pal_description"
+        android:layout_toRightOf="@+id/profile_image"
+        android:gravity="center"
+        android:layout_alignLeft="@+id/tv_pal_description"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/iv_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/dog" />
+
+        <com.org.pawpal.custom.CustomTextView
+            android:id="@+id/tv_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Empty"
+            android:textAllCaps="false"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ll_size"
+        android:layout_toRightOf="@+id/ll_size"
+        android:layout_marginLeft="10dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/afternoon" />
+
+        <com.org.pawpal.custom.CustomTextView
+            android:id="@+id/tv_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Empty"
+            android:textAllCaps="false"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_activities"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignBottom="@+id/ll_period"
+        android:layout_alignParentRight="true"/>
+
+    <com.org.pawpal.custom.CustomTextView
+        android:id="@+id/tv_pal_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/profile_image"
+        android:layout_toRightOf="@+id/profile_image"
+        android:paddingLeft="20dp"
+        android:text="Name"
+        android:textAllCaps="false"
+        android:textColor="@color/light_blue_color"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/rv_activities"
+        android:layout_marginTop="20dp"
+        android:background="@color/light_gray" />
+</RelativeLayout>

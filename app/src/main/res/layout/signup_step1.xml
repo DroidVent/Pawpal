@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <!--    <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:src="@mipmap/horizontal_small_strip" />
+
+            <ImageView
+                android:layout_width="68dp"
+                android:layout_height="28dp"
+                android:layout_gravity="right|center"
+                android:src="@mipmap/pp_icon" />
+
+            <com.org.pawpal.custom.CustomTextView
+                android:id="@+id/tv_create"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/create_account"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </FrameLayout>-->
+
+        <com.org.pawpal.custom.CustomTextView
+            android:id="@+id/tv_step1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/step1"
+            android:textColor="@color/light_blue_color"
+            android:textSize="18sp"
+            android:paddingTop="5dp"
+            android:textStyle="bold" />
+
+        <com.org.pawpal.custom.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="@string/registration"
+            android:textColor="@color/green_normal"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center_horizontal"
+
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@mipmap/step1_active" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:src="@mipmap/step2" />
+
+        </LinearLayout>
+
+        <com.org.pawpal.custom.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:text="@string/profile"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:id="@+id/customTextView" />
+
+        <Spinner
+            android:id="@+id/spinner_type"
+            style="@style/spinner_style"
+            />
+
+        <com.org.pawpal.custom.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:text="@string/your_details"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <com.org.pawpal.custom.CEditText
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@mipmap/txtfield"
+            android:padding="10dp"
+            android:hint="@string/name"
+            android:textSize="12sp"
+            android:textColor="@color/dark_gray"
+             />
+
+        <com.org.pawpal.custom.CEditText
+            android:id="@+id/et_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@mipmap/txtfield"
+            android:textSize="12sp"
+            android:padding="10dp"
+            android:hint="@string/nickname"
+            android:textColor="@color/dark_gray"
+             />
+        <com.org.pawpal.custom.CEditText
+            android:id="@+id/et_email"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@mipmap/txtfield"
+            android:inputType="textEmailAddress"
+            android:textSize="12sp"
+            android:padding="10dp"
+            android:hint="@string/email"
+            android:textColor="@color/dark_gray"
+             />
+        <com.org.pawpal.custom.CEditText
+            android:id="@+id/et_phone"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@mipmap/txtfield"
+            android:inputType="phone"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:hint="@string/phone"
+            android:textColor="@color/dark_gray"
+            />
+        <com.org.pawpal.custom.CEditText
+            android:id="@+id/et_city"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@mipmap/txtfield"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:hint="@string/city"
+            android:textColor="@color/dark_gray"
+            />
+        <com.org.pawpal.custom.CustomTextView
+            android:id="@+id/tv_country"
+            android:layout_width="match_parent"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:textColor="@color/dark_gray"
+            android:background="@mipmap/dropdown"
+            android:hint="@string/country"
+            android:layout_height="40dp" />
+
+        <com.org.pawpal.custom.CEditText
+            android:id="@+id/et_makani_number"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@mipmap/txtfield"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:hint="@string/makani_number"
+            android:textColor="@color/dark_gray"
+             />
+        <com.org.pawpal.custom.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:text="@string/set_password"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+        <com.org.pawpal.custom.CEditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@mipmap/txtfield"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:inputType="textPassword"
+            android:hint="@string/password"
+            android:textColor="@color/dark_gray"
+            />
+        <com.org.pawpal.custom.CEditText
+            android:id="@+id/et_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@mipmap/txtfield"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:inputType="textPassword"
+            android:hint="@string/confirm_password"
+            android:textColor="@color/dark_gray"
+             />
+        <CheckBox
+            android:id="@+id/cb_age"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="@string/age_text"
+            android:layout_gravity="center"/>
+        <Button
+            android:id="@+id/btn_continue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Continue"
+            android:layout_gravity="center"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="30dp"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:background="@drawable/round_green_button"
+            android:layout_marginBottom="10dp"
+            />
+    </LinearLayout>
+</ScrollView>

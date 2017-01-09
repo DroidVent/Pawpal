@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+    <RelativeLayout
+        android:id="@+id/rl_subscribe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:background="@color/white"
+        android:orientation="horizontal">
+        <com.org.pawpal.custom.CustomTextView
+            android:id="@+id/tv_subscription_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/btn_subscribe"
+            android:text="Enjoy 6 months FULL subscription for free.It allows you to get in contact with other Pals"
+            android:textColor="@color/dark_gray"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_subscribe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/round_green_button"
+            android:text="Click Here"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <com.org.pawpal.custom.CustomTextView
+        android:id="@+id/tv_pals_found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/rl_subscribe"
+        android:text=""
+        android:padding="10dp"
+        android:textStyle="bold"
+        android:textColor="@color/light_blue_color"
+        android:textSize="16sp" />
+
+    <RelativeLayout
+        android:id="@+id/rl_clear_filters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/rl_subscribe"
+
+        android:background="@drawable/round_blue_button">
+
+        <com.org.pawpal.custom.CustomTextView
+            android:id="@+id/tv_clear_filters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="Clear Filters"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_clear_filter_by"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_subscribe"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@+id/rl_clear_filters"
+        android:background="@drawable/round_blue_button">
+
+        <com.org.pawpal.custom.CustomTextView
+            android:id="@+id/tv_filter_by"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:text="Filter By"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/rl_clear_filter_by"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/light_gray" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_pals"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:layout_below="@+id/divider1">
+
+    </android.support.v7.widget.RecyclerView>
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+    <com.org.pawpal.custom.CustomTextView
+        android:id="@+id/tv_no_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:text="@string/no_result_found"/>
+</RelativeLayout>

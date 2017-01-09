@@ -1,0 +1,222 @@
+package com.org.pawpal.activities;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.org.pawpal.MyApplication;
+import com.org.pawpal.R;
+import com.org.pawpal.Utils.Constants;
+import com.org.pawpal.Utils.PrefManager;
+import com.org.pawpal.Utils.Utility;
+import com.org.pawpal.adapter.HorizontalRVAdapter;
+import com.org.pawpal.adapter.PalProfileImagesAdapter;
+import com.org.pawpal.interfaces.OnItemCheckBoxListener;
+import com.org.pawpal.model.AddFavoriteResponse;
+import com.org.pawpal.model.SearchPal;
+import com.org.pawpal.model.UserImages;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
+
+/**
+ * Created by hp-pc on 01-01-2017.
+ */
+
+public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxListener {
+    private RecyclerView recyclerViewImages;
+    private RecyclerView recyclerViewActivities;
+    private SearchPal searchPal;
+    private ImageView ivProfileImageView;
+    private TextView tvUserType, tvMemberSince, tvLoginAt, tvLocation, tvSize, tvPeriod, tvName;
+    private LinearLayoutManager imagesLayoutManager;
+    private List<UserImages> userImages;
+    private HorizontalRVAdapter activitiesAdapter;
+    private RelativeLayout addFavorite;
+    private ProgressBar progressBar;
+    private CompositeSubscription compositeSubscription;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_pal_profile);
+        retrieveBundleData();
+        init();
+        setData();
+        setActivitiesAdapter();
+        setImagesAdapter();
+    }
+
+    private void setActivitiesAdapter() {
+        recyclerViewActivities.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        activitiesAdapter = new HorizontalRVAdapter(searchPal.getPalActivities());
+        recyclerViewActivities.setAdapter(activitiesAdapter);
+    }
+
+    private void setData() {
+        String createdAt = searchPal.getProfile_created_at();
+        String LoginAt = searchPal.getLast_login();
+        String Location = searchPal.getDistance();
+        String Period = searchPal.getPeriod();
+        String UserType = searchPal.getProfile_type();
+        String size = searchPal.getPet_size();
+        String name = searchPal.getName();
+        if (!Utility.isEmptyString(createdAt)) {
+            if (Utility.isDateValid(createdAt,"yyyy-MM-dd hh:mm:ss"))
+                tvMemberSince.setText(Utility.formatDate(createdAt));
+            else
+                tvMemberSince.setText(createdAt);
+        }
+
+        if (!Utility.isEmptyString(LoginAt))
+            tvLoginAt.setText(Utility.formatDate(LoginAt));
+        if (!Utility.isEmptyString(Location))
+            tvLocation.setText(Location + " from you");
+        if (!Utility.isEmptyString(Period))
+            tvPeriod.setText(Period);
+        if (!Utility.isEmptyString(UserType))
+            tvUserType.setText(UserType);
+        if (!Utility.isEmptyString(size))
+            setSizeValue(size);
+        if (!Utility.isEmptyString(name))
+            tvName.setText(name);
+        if (searchPal.getUserImages().size() != 0)
+            Picasso.with(this).load(searchPal.getUserImages().get(0).getUrl()).fit().centerCrop().placeholder(R.mipmap.img_default).into(ivProfileImageView);
+    }
+
+
+    private void setImagesAdapter() {
+        PalProfileImagesAdapter palProfileImagesAdapter = new PalProfileImagesAdapter(userImages, this);
+        imagesLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerViewImages.setLayoutManager(imagesLayoutManager);
+
+        recyclerViewImages.setAdapter(palProfileImagesAdapter);
+    }
+
+    private void retrieveBundleData() {
+        Bundle bundle = getIntent().getExtras();
+        userImages = new ArrayList<>();
+        if (bundle != null) {
+            searchPal = (SearchPal) bundle.get("profile");
+            userImages.addAll(searchPal.getUserImages());
+        }
+    }
+
+    private void setSizeValue(String size) {
+        switch (size) {
+            case "SM":
+                tvSize.setText("Small");
+                break;
+            case "XS":
+                tvSize.setText(Constants.X_SMALL);
+                break;
+            case "MD":
+                tvSize.setText(Constants.Medium);
+                break;
+            case "LG":
+                tvSize.setText(Constants.LARGE);
+                break;
+            case "XL":
+                tvSize.setText(Constants.EXTRA_LARGE);
+                break;
+            case "VS":
+                tvSize.setText(Constants.VERY_SMALL);
+                break;
+        }
+    }
+
+    private void init() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getString(R.string.findpal));
+        recyclerViewImages = (RecyclerView) findViewById(R.id.rv_images);
+        recyclerViewActivities = (RecyclerView) findViewById(R.id.rv_activities);
+        ivProfileImageView = (CircleImageView) findViewById(R.id.profile_image);
+        addFavorite = (RelativeLayout) findViewById(R.id.rl_add_favorites);
+        compositeSubscription = new CompositeSubscription();
+        tvMemberSince = (TextView) findViewById(R.id.tv_member_since_txt);
+        tvLoginAt = (TextView) findViewById(R.id.tv_login_txt);
+        tvName = (TextView) findViewById(R.id.tv_username);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        tvLocation = (TextView) findViewById(R.id.tv_location);
+        tvSize = (TextView) findViewById(R.id.tv_size);
+        tvPeriod = (TextView) findViewById(R.id.tv_period);
+        tvUserType = (TextView) findViewById(R.id.tv_usertype);
+        addFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addAsFavorite();
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onItemCheck(int position) {
+
+    }
+
+    @Override
+    public void onItemUnCheck(int position) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeSubscription.unsubscribe();
+    }
+
+    private void addAsFavorite() {
+        progressBar.setVisibility(View.VISIBLE);
+        String profileID = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID);
+        compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().addFavorite(profileID, searchPal.getId())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<AddFavoriteResponse>() {
+                    @Override
+                    public void onCompleted() {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        progressBar.setVisibility(View.GONE);
+                        showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
+                    }
+
+                    @Override
+                    public void onNext(AddFavoriteResponse addFavoriteResponse) {
+                        progressBar.setVisibility(View.GONE);
+                        if (Integer.valueOf(addFavoriteResponse.getCode()) == Constants.SUCCESS_CODE) {
+                            Toast.makeText(PalProfileActivity.this, addFavoriteResponse.getMessage(), Toast.LENGTH_LONG).show();
+                        } else
+                            showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
+                    }
+                }));
+    }
+}
