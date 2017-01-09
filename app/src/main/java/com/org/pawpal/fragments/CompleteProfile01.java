@@ -347,7 +347,7 @@ public class CompleteProfile01 extends Fragment implements View.OnClickListener,
                                 if (!Utility.isEmptyString(postProfile.getPeriod()))
                                     if (!Utility.isEmptyString(postProfile.getFrequency()))
                                     {
-                                        
+
                                         Intent signInIntent = new Intent(getContext(), CompleteProfile02Activity.class);
                                         signInIntent.putExtra("profile01", postProfile);
                                         startActivity(signInIntent);
