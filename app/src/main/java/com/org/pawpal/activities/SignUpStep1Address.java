@@ -1,12 +1,18 @@
 package com.org.pawpal.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +21,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,10 +53,11 @@ import static com.org.pawpal.R.id.map;
  * Created by hp-pc on 30-11-2016.
  */
 
-public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallback, View.OnClickListener {
+public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallback, View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final int UPDATE_LOC = 1;
     private static final int ERROR = 0;
     private static final String TAG = SignUpStep1Address.class.getSimpleName();
+    private static final int GPS_PERMISSION_REQUEST = 100;
     private EditText etLat, etLongt, etAddress;
     private Button btnContinue, btnSearch, btnContinueToLogin;
     private GoogleMap mMap;
@@ -54,6 +65,7 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
     private CheckBox cbTerms;
     private ProgressBar progressBar;
     private boolean success;
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,10 +107,37 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
 
     }
 
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStart() {
+// connect googleapiclient
+//        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+// disconnect googleapiclient
+        if (mGoogleApiClient!= null)
+            mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         float maxZoom = 17.0f;
+
+        checkForGPSPermission();
+
         LatLng latLng = new LatLng(25.2048, 55.2708);
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, maxZoom);
         mMap.animateCamera(cameraUpdate);
@@ -111,10 +150,49 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         etLongt.setText(longt);
 
     }
-    private void getCurrentLocation()
-    {
+
+    private void setLocation() {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            return;
+        else {
+            Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (mLastLocation != null) {
+                // here we go you can see current lat long.
+                LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17.0f);
+                mMap.animateCamera(cameraUpdate);
+                mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title(""));
+                lat = String.valueOf(latLng.latitude);
+                longt = String.valueOf(latLng.longitude);
+                etLat.setText(lat);
+                etLongt.setText(longt);
+//                Log.e(TAG, "onConnected: " + String.valueOf(mLastLocation.getLatitude()) + ":" + String.valueOf(mLastLocation.getLongitude()));
+            }
+        }
 
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode)
+        {
+            case GPS_PERMISSION_REQUEST:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    buildGoogleApiClient();
+
+                } else {
+
+                    Toast.makeText(SignUpStep1Address.this, "You did not allow Location permission", Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
+    }
+
     public LatLng getLocationFromAddress(String strAddress) {
 
         Geocoder coder = new Geocoder(this);
@@ -157,7 +235,7 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         public void handleMessage(Message msg) {
             if (msg.what == UPDATE_LOC) {
                 setMapAddress((LatLng) msg.obj);
-            }else if (msg.what == ERROR)
+            } else if (msg.what == ERROR)
                 progressBar.setVisibility(View.GONE);
             super.handleMessage(msg);
         }
@@ -225,10 +303,6 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         if (!address.equals(""))
             if (cbTerms.isChecked())
                 doRegister();
-            /*{
-                Intent mIntent = new Intent(this, SignUpStep2.class);
-                startActivity(mIntent);
-            }*/
             else
                 showSnackBar("Please accept terms", (RelativeLayout) findViewById(R.id.parent_view));
         else {
@@ -263,8 +337,8 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
                         ((LinearLayout) findViewById(R.id.ll_step2_view)).setVisibility(View.VISIBLE);
                     } else
                         showSnackBar(response.message(), (RelativeLayout) findViewById(R.id.parent_view));
-                    Log.e("SignUp: ","Response: "+response.code()+
-                            " usertype:"+userType+" name:"+name+" nickname:"+nickname+" email:"+email+" phone:"+phone+" city:"+city+" country:"+country+" makani:"+makaniNum+" Password:"+password);
+                    Log.e("SignUp: ", "Response: " + response.code() +
+                            " usertype:" + userType + " name:" + name + " nickname:" + nickname + " email:" + email + " phone:" + phone + " city:" + city + " country:" + country + " makani:" + makaniNum + " Password:" + password);
                 }
             }
 
@@ -275,5 +349,31 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
 
             }
         });
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        setLocation();
+
+    }
+    private void checkForGPSPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            if ((checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) && ((checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)))
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION}, GPS_PERMISSION_REQUEST);
+            else
+            {
+                buildGoogleApiClient();
+            }
+        else
+            buildGoogleApiClient();
+    }
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
