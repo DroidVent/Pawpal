@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.mukesh.countrypicker.fragments.CountryPicker;
 import com.mukesh.countrypicker.interfaces.CountryPickerListener;
 import com.org.pawpal.R;
+import com.org.pawpal.activities.BaseActivity;
 import com.org.pawpal.activities.SignUpStep1Address;
 import com.org.pawpal.custom.CustomTextView;
 
@@ -41,7 +42,7 @@ public class SignUpStep1 extends Fragment {
     private Button btnContinue;
     private CheckBox cbAge;
     private String userType, name, nickname, email, phone, city, country, makaniNum, password, confirmPassword;
-
+    private BaseActivity baseActivity;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class SignUpStep1 extends Fragment {
     }
 
     private void init() {
+        baseActivity = (BaseActivity) getActivity();
         spinnerType = (Spinner) rootView.findViewById(R.id.spinner_type);
         tvCountry = (CustomTextView) rootView.findViewById(R.id.tv_country);
         btnContinue = (Button) rootView.findViewById(R.id.btn_continue);
@@ -190,6 +192,7 @@ public class SignUpStep1 extends Fragment {
     }
 
     private void launchSignUpStep1Address() {
+        baseActivity.hideKeyBoard();
         Intent mIntent = new Intent(getContext(), SignUpStep1Address.class);
         mIntent.putExtra("registration", setBundle());
         startActivity(mIntent);
@@ -219,26 +222,10 @@ public class SignUpStep1 extends Fragment {
             public void onSelectCountry(String name, String code, String dialCode, int flagDrawableResID) {
                 // Implement your code here
                 tvCountry.setText(name);
+                etMakani.requestFocus();
                 picker.dismiss();
             }
         });
-      /*  Locale[] locales = Locale.getAvailableLocales();
-        ArrayList<String> countries = new ArrayList<String>();
-        for (Locale locale : locales) {
-            String country = locale.getDisplayCountry();
-            if (country.trim().length() > 0 && !countries.contains(country)) {
-                countries.add(country);
-            }
-        }
-        Collections.sort(countries);
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>
-                (getContext(), R.layout.view_user_type_spinner_item, countries);
-
-        dataAdapter.setDropDownViewResource
-                (R.layout.view_user_type_spinner_item);
-
-        tvCountry.setAdapter(dataAdapter);*/
 
     }
 
