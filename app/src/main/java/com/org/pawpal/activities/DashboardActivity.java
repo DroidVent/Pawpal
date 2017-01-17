@@ -2,15 +2,13 @@ package com.org.pawpal.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -19,25 +17,45 @@ import com.org.pawpal.Utils.PrefManager;
 import com.org.pawpal.fragments.CompleteProfile01;
 import com.org.pawpal.fragments.FindPalFragment;
 import com.org.pawpal.fragments.HomeFragment;
+import com.org.pawpal.fragments.InboxFragment;
+import com.org.pawpal.fragments.NavigationDrawerFragment;
+import com.org.pawpal.fragments.SentFragment;
 
 /**
  * Created by hp-pc on 03-12-2016.
  */
 
-public class DashboardActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class DashboardActivity extends BaseActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+    private static final String TAG = DashboardActivity.class.getSimpleName();
     Toolbar toolbar;
-    private ActionBarDrawerToggle toggle;
+    /*    private ActionBarDrawerToggle toggle;
+
+        private NavigationView navigationView;*/
     private TextView username;
-    private NavigationView navigationView;
+    private NavigationDrawerFragment mNavigationDrawerFragment;
+
+    private CharSequence mTitle;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        setUpNavigationView();
+        setUpToolbar();
+        mNavigationDrawerFragment = (NavigationDrawerFragment)
+                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+        mTitle = getTitle();
+        mNavigationDrawerFragment.setUp(
+                R.id.navigation_drawer,
+                (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        username = (TextView) mDrawerLayout.findViewById(R.id.tv_username);
+        setUsername();
+        onNavigationDrawerItemSelected(0, -1);
 
     }
+
 
     private void setUsername() {
 
@@ -46,11 +64,12 @@ public class DashboardActivity extends BaseActivity implements NavigationView.On
             username.setText("Hi " + name);
     }
 
-    private void setUpNavigationView() {
+    private void setUpToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        getSupportActionBar().setHomeButtonEnabled(true);
+/*        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -61,10 +80,10 @@ public class DashboardActivity extends BaseActivity implements NavigationView.On
 
         username = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_username);
         setUsername();
-        onNavigationItemSelected(navigationView.getMenu().getItem(0));
+        onNavigationItemSelected(navigationView.getMenu().getItem(0));*/
     }
 
-    @Override
+/*    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -90,7 +109,7 @@ public class DashboardActivity extends BaseActivity implements NavigationView.On
         }
 
         return true;
-    }
+    }*/
 
 
     public void launchFragment(Fragment fragment, String tag) {
@@ -120,7 +139,15 @@ public class DashboardActivity extends BaseActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return false;
+        if (item.getItemId() == android.R.id.home) {
+            if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                mDrawerLayout.closeDrawer(Gravity.LEFT);
+            } else {
+                mDrawerLayout.openDrawer(Gravity.LEFT);
+            }
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void showBackNavigation() {
@@ -129,14 +156,50 @@ public class DashboardActivity extends BaseActivity implements NavigationView.On
 
     public void hideBackNavigation() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        toggle.syncState();
+//        toggle.syncState();
     }
-    public void showSnack(String msg)
-    {
+
+    public void showSnack(String msg) {
         Snackbar snackbar = Snackbar
                 .make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
 
         snackbar.show();
     }
 
+
+    @Override
+    public void onNavigationDrawerItemSelected(int groupPosition, int childPosition) {
+        if (groupPosition == 0) {
+            Fragment homeFragment = new HomeFragment();
+            toolbar.setTitle("");
+            toolbar.setTitle(getString(R.string.dashboard));
+            launchFragment(homeFragment, "home");
+        } else if (groupPosition == 1) {
+            Fragment homeFragment = new FindPalFragment();
+            toolbar.setTitle(getString(R.string.findpal));
+            launchFragment(homeFragment, "findpal");
+        } else if (groupPosition == 2) {
+            toolbar.setTitle(getString(R.string.messages));
+            switch (childPosition) {
+                case 0:
+                    Fragment inboxFragment = new InboxFragment();
+                    launchFragment(inboxFragment, "inbox");
+                    break;
+                case 1:
+                    Fragment sentFragment = new SentFragment();
+                    launchFragment(sentFragment, "sent");
+                    break;
+                case 2:
+                    break;
+            }
+
+        } else if (groupPosition == 3) {
+            Fragment pawfile = new CompleteProfile01();
+            toolbar.setTitle(getString(R.string.pawfile));
+            launchFragment(pawfile, "pawfile");
+        } else if (groupPosition == 4) {
+            PrefManager.clear(this);
+            launchMainScreen();
+        }
+    }
 }

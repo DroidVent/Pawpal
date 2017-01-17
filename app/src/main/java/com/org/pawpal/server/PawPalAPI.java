@@ -3,12 +3,16 @@ package com.org.pawpal.server;
 import com.org.pawpal.model.AddFavoriteResponse;
 import com.org.pawpal.model.FavoriteResponse;
 import com.org.pawpal.model.FilterPal;
+import com.org.pawpal.model.GetInboxMessageResponse;
+import com.org.pawpal.model.GetSentMessageResponse;
 import com.org.pawpal.model.Login;
 import com.org.pawpal.model.PalActivitiyResponse;
+import com.org.pawpal.model.PostMessage;
 import com.org.pawpal.model.PostProfile;
 import com.org.pawpal.model.Profile;
 import com.org.pawpal.model.Register;
 import com.org.pawpal.model.SearchPalResponse;
+import com.org.pawpal.model.SendMessageResponse;
 import com.org.pawpal.model.UpdateProfile;
 import com.org.pawpal.model.User;
 
@@ -52,10 +56,14 @@ public interface PawPalAPI {
     Observable<SearchPalResponse> searchPal(@Body FilterPal filterPal);
 
     @POST("profile/edit_profile.json")
-/*    Call<UpdateProfile> saveProfile(@Field("profile_id") String profileId,@Field("description") String description,@Field("frequency") String frequency,@Field("period") String period,
-                                          @Field("pet_breed") String pet_breed,@Field("pet_dob") String pet_dob,@Field("pet_gender") String pet_gender,
-                                            @Field("pet_size") String size,
-                                          @Field("pet_name") String pet_name,@Field("activities") String activities,@Field("profileImages") String profileImages);
-    */
     Observable<UpdateProfile> saveProfile(@Body PostProfile postProfile);
+
+    @POST("message/send_message.json")
+    Observable<SendMessageResponse> sendMessage(@Body PostMessage postMessage);
+
+    @GET("message/get_inbox.json")
+    Observable<GetInboxMessageResponse> getInboxMessages(@Query("profile_id") String profile_id);
+
+    @GET("message/get_sent_messages.json")
+    Observable<GetSentMessageResponse> getSentMessages(@Query("profile_id") String profile_id);
 }

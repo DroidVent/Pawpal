@@ -50,7 +50,9 @@ import com.org.pawpal.model.Register;
 import com.org.pawpal.model.User;
 import com.org.pawpal.server.PawPalAPI;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -221,15 +223,22 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17.0f);
         mMap.animateCamera(cameraUpdate);
-        mMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .title(""));
+        mMap.addMarker(getMarkerOption(latLng));
         lat = String.valueOf(latLng.latitude);
         longt = String.valueOf(latLng.longitude);
+
         etLat.setText("");
         etLongt.setText("");
         etLat.setText(lat);
         etLongt.setText(longt);
+        getCityStateFromLatLng(latLng);
+    }
+
+    private MarkerOptions getMarkerOption(LatLng latLng) {
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+//        markerOptions.icon(BitmapDescriptorFactory.fromResource(android.R.drawable.b));
+        return markerOptions;
     }
 
     @Override
@@ -296,7 +305,21 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
             super.handleMessage(msg);
         }
     };
+    private void getCityStateFromLatLng(LatLng latLng)
+    {
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            String city = addresses.get(0).getAddressLine(0);
+            String stateName = addresses.get(0).getAddressLine(1);
+            String countryName = addresses.get(0).getAddressLine(2);
+            etAddress.setText(city+ " "+stateName+" "+countryName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -349,6 +372,7 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         longt = String.valueOf(latLng.longitude);
         etLat.setText(lat);
         etLongt.setText(longt);
+        getCityStateFromLatLng(latLng);
 
     }
 

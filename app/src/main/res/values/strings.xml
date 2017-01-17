@@ -74,6 +74,8 @@
     <string name="no_result_found">No Result Found</string>
     <string name="inbox">Inbox</string>
     <string name="sent">Sent</string>
+    <string name="drawer_open">open</string>
+    <string name="drawer_close">close</string>
     <string-array name="petsize_array">
         <item>Pet\'s Size Allowed</item>
         <item>Small</item>

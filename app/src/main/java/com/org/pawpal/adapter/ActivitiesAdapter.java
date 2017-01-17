@@ -52,19 +52,7 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
                     onItemCheckBoxListener.onItemUnCheck(position);
             }
         });
-       /* holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked)
-                {
-                    Log.e("Adapter Checked ",""+ i[0]++);
-                    onItemCheckBoxListener.onItemCheck(position);
-                }
 
-                else
-                    onItemCheckBoxListener.onItemUnCheck(position);
-            }
-        });*/
     }
 
     @Override

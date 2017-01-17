@@ -19,9 +19,13 @@ import com.org.pawpal.Utils.PrefManager;
 import com.org.pawpal.Utils.Utility;
 import com.org.pawpal.adapter.HorizontalRVAdapter;
 import com.org.pawpal.adapter.PalProfileImagesAdapter;
+import com.org.pawpal.fragments.SendMessageDialog;
 import com.org.pawpal.interfaces.OnItemCheckBoxListener;
+import com.org.pawpal.interfaces.OnSendMessageListener;
 import com.org.pawpal.model.AddFavoriteResponse;
+import com.org.pawpal.model.PostMessage;
 import com.org.pawpal.model.SearchPal;
+import com.org.pawpal.model.SendMessageResponse;
 import com.org.pawpal.model.UserImages;
 import com.squareup.picasso.Picasso;
 
@@ -38,7 +42,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by hp-pc on 01-01-2017.
  */
 
-public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxListener {
+public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxListener, OnSendMessageListener {
     private RecyclerView recyclerViewImages;
     private RecyclerView recyclerViewActivities;
     private SearchPal searchPal;
@@ -47,9 +51,10 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
     private LinearLayoutManager imagesLayoutManager;
     private List<UserImages> userImages;
     private HorizontalRVAdapter activitiesAdapter;
-    private RelativeLayout addFavorite;
+    private RelativeLayout addFavorite, sendMessage;
     private ProgressBar progressBar;
     private CompositeSubscription compositeSubscription;
+    private SendMessageDialog dialogFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -147,6 +152,7 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         recyclerViewActivities = (RecyclerView) findViewById(R.id.rv_activities);
         ivProfileImageView = (CircleImageView) findViewById(R.id.profile_image);
         addFavorite = (RelativeLayout) findViewById(R.id.rl_add_favorites);
+        sendMessage = (RelativeLayout) findViewById(R.id.rl_send_msg);
         compositeSubscription = new CompositeSubscription();
         tvMemberSince = (TextView) findViewById(R.id.tv_member_since_txt);
         tvLoginAt = (TextView) findViewById(R.id.tv_login_txt);
@@ -162,8 +168,18 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
                 addAsFavorite();
             }
         });
+        sendMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog();
+            }
+        });
     }
-
+    void showDialog() {
+        // Create the fragment and show it as a dialog.
+        dialogFragment = SendMessageDialog.newInstance();
+        dialogFragment.show(getSupportFragmentManager(), "dialog");
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -214,6 +230,39 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
                         progressBar.setVisibility(View.GONE);
                         if (Integer.valueOf(addFavoriteResponse.getCode()) == Constants.SUCCESS_CODE) {
                             Toast.makeText(PalProfileActivity.this, addFavoriteResponse.getMessage(), Toast.LENGTH_LONG).show();
+                        } else
+                            showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
+                    }
+                }));
+    }
+
+    @Override
+    public void onMessageSend(String message) {
+        progressBar.setVisibility(View.VISIBLE);
+        PostMessage postMessage = new PostMessage();
+        postMessage.setMessage_text(message);
+        postMessage.setUser_profile_id(searchPal.getId());
+        postMessage.setProfile_id(PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID));
+        compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().sendMessage(postMessage)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<SendMessageResponse>() {
+                    @Override
+                    public void onCompleted() {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        progressBar.setVisibility(View.GONE);
+                        showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
+                    }
+
+                    @Override
+                    public void onNext(SendMessageResponse sendMessageResponse) {
+                        progressBar.setVisibility(View.GONE);
+                        if (Integer.valueOf(sendMessageResponse.getCode()) == Constants.SUCCESS_CODE) {
+                            Toast.makeText(PalProfileActivity.this, sendMessageResponse.getMessage(), Toast.LENGTH_LONG).show();
                         } else
                             showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
                     }
