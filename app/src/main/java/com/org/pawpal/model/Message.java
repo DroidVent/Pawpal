@@ -1,61 +1,72 @@
 package com.org.pawpal.model;
 
+import java.util.ArrayList;
+
 /**
- * Created by hp-pc on 14-01-2017.
+ * Created by hp-pc on 17-01-2017.
  */
 public class Message {
+    private String message_text;
+    private String thread_id;
+    private String created_date;
+    private String name;
+    private int isFav;
+    private int profile_id;
+    private ArrayList<UserImages> images;
 
-    private String reply;
-    private int type;
-    private String username;
-    private int isStar;
-    private int isArchieve;
-    private String message_date;
-    public String getReply() {
-        return reply;
+    public int getProfile_id() {
+        return profile_id;
     }
 
-    public void setReply(String reply) {
-        this.reply = reply;
+    public void setProfile_id(int profile_id) {
+        this.profile_id = profile_id;
     }
 
-    public int getType() {
-        return type;
+    public String getMessage_text() {
+        return message_text;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setMessage_text(String message_text) {
+        this.message_text = message_text;
     }
 
-    public String getUsername() {
-        return username;
+    public String getThread_id() {
+        return thread_id;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setThread_id(String thread_id) {
+        this.thread_id = thread_id;
     }
 
-    public int getIsStar() {
-        return isStar;
+    public String getCreated_date() {
+        return created_date;
     }
 
-    public void setIsStar(int isStar) {
-        this.isStar = isStar;
+    public void setCreated_date(String created_date) {
+        this.created_date = created_date;
     }
 
-    public int getIsArchieve() {
-        return isArchieve;
+    public String getName() {
+        return name;
     }
 
-    public void setIsArchieve(int isArchieve) {
-        this.isArchieve = isArchieve;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getMessage_date() {
-        return message_date;
+    public ArrayList<UserImages> getImages() {
+        return images;
     }
 
-    public void setMessage_date(String message_date) {
-        this.message_date = message_date;
+    public void setImages(ArrayList<UserImages> images) {
+        this.images = images;
+    }
+
+    public int getIsFav() {
+        return isFav;
+    }
+
+    public void setIsFav(int isFav) {
+        this.isFav = isFav;
     }
 }

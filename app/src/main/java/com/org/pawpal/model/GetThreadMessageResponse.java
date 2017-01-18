@@ -3,13 +3,13 @@ package com.org.pawpal.model;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by hp-pc on 16-01-2017.
+ * Created by hp-pc on 18-01-2017.
  */
-public class GetInboxMessageResponse {
+public class GetThreadMessageResponse {
     private String code;
     private String message;
     @SerializedName("data")
-    private InboxMessageResponse inboxResponse;
+    private ThreadMessageResponse response;
     public String getCode() {
         return code;
     }
@@ -26,11 +26,11 @@ public class GetInboxMessageResponse {
         this.message = message;
     }
 
-    public InboxMessageResponse getInboxResponse() {
-        return inboxResponse;
+    public ThreadMessageResponse getResponse() {
+        return response;
     }
 
-    public void setInboxResponse(InboxMessageResponse inboxResponse) {
-        this.inboxResponse = inboxResponse;
+    public void setResponse(ThreadMessageResponse response) {
+        this.response = response;
     }
 }

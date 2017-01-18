@@ -1,5 +1,6 @@
 package com.org.pawpal.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.org.pawpal.R;
 import com.org.pawpal.interfaces.OnInboxListener;
 import com.org.pawpal.model.Message;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -23,10 +25,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.MyViewHolder>  {
     private ArrayList<Message> messages;
     private OnInboxListener onInboxListener;
-
-    public InboxAdapter(ArrayList<Message> messages, OnInboxListener onInboxListener) {
-        this.messages = messages;
+    private Context context;
+    public InboxAdapter(Context context, ArrayList<Message> conversations, OnInboxListener onInboxListener) {
+        this.messages = conversations;
         this.onInboxListener = onInboxListener;
+        this.context = context;
     }
 
     @Override
@@ -40,8 +43,19 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(InboxAdapter.MyViewHolder holder, final int position) {
         Message message = messages.get(position);
-        if (message.getIsStar() == 0)
+        Integer isStar = message.getIsFav();
+        if (isStar == null || isStar == 0)
             holder.ivStar.setVisibility(View.GONE);
+        holder.tvMessage.setText(message.getMessage_text());
+        holder.tvDate.setText(message.getCreated_date());
+        holder.tvUsername.setText(message.getName());
+        String image;
+        if (message.getImages() != null)
+            if (message.getImages().size() != 0)
+            {
+                image = message.getImages().get(0).getUrl();
+                Picasso.with(context).load(image).fit().centerCrop().placeholder(R.mipmap.img_default).into(holder.ivProfile);
+            }
 
         holder.item.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,8 +89,10 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.MyViewHolder
         public View item;
         public RelativeLayout starUnstar, archieve;
         private ImageView ivStar;
-        private TextView tvDate;
+        private TextView tvDate, tvMessage;
         private CircleImageView ivProfile;
+        public TextView tvUsername;
+
         public MyViewHolder(View itemView) {
             super(itemView);
             item = itemView;
@@ -84,6 +100,8 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.MyViewHolder
             archieve = (RelativeLayout)item.findViewById(R.id.rl_archieve);
             ivStar = (ImageView)item.findViewById(R.id.iv_star);
             tvDate = (TextView)item.findViewById(R.id.tv_date);
+            tvMessage = (TextView)item.findViewById(R.id.tv_msg);
+            tvUsername = (TextView)item.findViewById(R.id.tv_username);
             ivProfile = (CircleImageView)item.findViewById(R.id.profile_image);
         }
     }

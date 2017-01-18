@@ -210,7 +210,7 @@ public class GPSTracker extends Service implements LocationListener {
         //Setting Dialog Title
         alertDialog.setTitle("GPS");
 
-        //Setting Dialog Message
+        //Setting Dialog Conversation
         alertDialog.setMessage("");
 
         //On Pressing Setting button

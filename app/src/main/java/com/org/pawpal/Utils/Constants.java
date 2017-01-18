@@ -29,7 +29,7 @@ public class Constants {
     public static final String EXTRA_LARGE = "Extra Large";
     public static final String VERY_SMALL = "Very Small";
 
-    public static final int MINE_MESSAGE = 0;
-    public static final int OTHER_USER_MESSAGE = 1;
+    public static final int MINE_MESSAGE = 1;
+    public static final int OTHER_USER_MESSAGE = 0;
     //https://drive.google.com/drive/u/0/folders/0ByRjINFyyRg_RjZ6cGdKOE01WFU
 }

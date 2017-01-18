@@ -1,179 +1,209 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/rl_inbox"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/white">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/iv_inbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:src="@mipmap/icon_pawfile_menu" />
-
-        <com.org.pawpal.custom.CustomTextView
-            android:id="@+id/tv_conversation_user"
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_view"
+            card_view:cardCornerRadius="4dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/iv_inbox"
-            android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:text="Conversation with Hunter"
-            android:textColor="@color/light_blue_color"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
+            android:layout_height="50dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+            <RelativeLayout
+                android:id="@+id/rl_inbox"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                >
 
+                <ImageView
+                    android:id="@+id/iv_inbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:src="@mipmap/icon_pawfile_menu" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
+                <com.org.pawpal.custom.CustomTextView
+                    android:id="@+id/tv_conversation_user"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@+id/iv_inbox"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
+                    android:text="Conversation with Hunter"
+                    android:textColor="@color/light_blue_color"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
 
-            android:id="@+id/profile_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_below="@+id/first_divider"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:src="@mipmap/img_default"
-            app:civ_border_color="@color/light_blue_color"
-            app:civ_border_width="2dp" />
-        <com.org.pawpal.custom.CustomTextView
-            android:id="@+id/tv_username"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/first_divider"
-            android:layout_toRightOf="@+id/profile_image"
-            android:text="Hunter"
-            android:layout_alignTop="@+id/profile_image"
-            android:textColor="@color/light_blue_color"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="10dp">
 
-        <com.org.pawpal.custom.CustomTextView
-            android:id="@+id/tv_member_since"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_username"
-            android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/profile_image"
-            android:text="Member Since"
-            android:textColor="@color/light_blue_color"
-            android:textStyle="bold" />
 
-        <com.org.pawpal.custom.CustomTextView
-            android:id="@+id/tv_login_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_username"
-            android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/tv_member_since"
-            android:paddingLeft="20dp"
-            android:text="Empty"
-            android:textColor="@color/dark_gray" />
+            <de.hdodenhof.circleimageview.CircleImageView
 
-        <LinearLayout
-            android:id="@+id/ll_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_member_since"
-            android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/profile_image"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/iv_location"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@mipmap/icon_location" />
+                android:id="@+id/profile_image"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_below="@+id/first_divider"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:src="@mipmap/img_default"
+                app:civ_border_color="@color/light_blue_color"
+                app:civ_border_width="2dp" />
 
             <com.org.pawpal.custom.CustomTextView
-                android:id="@+id/tv_location"
+                android:id="@+id/tv_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:text="2.6 kms from you"
-                android:textColor="@color/green_normal"
+                android:layout_alignTop="@+id/profile_image"
+                android:layout_below="@+id/first_divider"
+                android:layout_toRightOf="@+id/profile_image"
+                android:text=""
+                android:textColor="@color/light_blue_color"
+                android:textSize="16sp"
                 android:textStyle="bold" />
-        </LinearLayout>
-        <com.org.pawpal.custom.CustomTextView
-            android:id="@+id/tv_usertype"
-            android:layout_width="100dp"
+
+            <com.org.pawpal.custom.CustomTextView
+                android:id="@+id/tv_member_since"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_username"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/profile_image"
+                android:text="Member Since"
+                android:textColor="@color/light_blue_color"
+                android:textStyle="bold" />
+
+            <com.org.pawpal.custom.CustomTextView
+                android:id="@+id/tv_member_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_username"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/tv_member_since"
+                android:paddingLeft="20dp"
+                android:text="Empty"
+                android:textColor="@color/dark_gray" />
+
+            <LinearLayout
+                android:id="@+id/ll_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_member_since"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/profile_image"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/iv_location"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@mipmap/icon_location" />
+
+                <com.org.pawpal.custom.CustomTextView
+                    android:id="@+id/tv_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:text=""
+                    android:textColor="@color/green_normal"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <com.org.pawpal.custom.CustomTextView
+                android:id="@+id/tv_usertype"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/tv_member_since"
+                android:layout_below="@+id/ll_location"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/round_blue_button"
+                android:gravity="center"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="View Profile"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="10dp"
+            android:background="@color/light_gray" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_messages"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:gravity="center"
-            android:layout_alignLeft="@+id/tv_member_since"
-            android:layout_below="@+id/ll_location"
-            android:background="@drawable/round_blue_button"
-            android:textAllCaps="false"
-            android:text="View Profile"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/white" />
-    </RelativeLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="10dp"
-        android:background="@color/light_gray"/>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_messages"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        app:stackFromEnd = "true"
-        android:layout_weight="1"/>
-    <com.org.pawpal.custom.CEditText
-        android:id="@+id/et_msg"
-        android:layout_width="match_parent"
-        android:background="@drawable/send_message_bg"
-        android:gravity="start"
-        android:padding="10dp"
-        android:textSize="12sp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
-        android:hint="Enter your reply"
-        android:layout_height="60dp" />
-    <RelativeLayout
-        android:id="@+id/rl_send_msg"
-        android:layout_width="150dp"
-        android:layout_height="40dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
-        android:clickable="true"
-        android:background="@drawable/round_green_button"
-        android:layout_gravity="right"
-        >
-        <com.org.pawpal.custom.CustomTextView
+            app:stackFromEnd="true" />
+
+        <com.org.pawpal.custom.CEditText
+            android:id="@+id/et_msg"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Send Reply"
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:layout_toLeftOf="@+id/iv_send_icon"
-            android:layout_marginRight="5dp"
-            />
-        <ImageView
-            android:id="@+id/iv_send_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_height="60dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/send_msg"/>
-    </RelativeLayout>
-</LinearLayout>
+            android:background="@drawable/send_message_bg"
+            android:gravity="start"
+            android:hint="Enter your reply"
+            android:padding="10dp"
+            android:textSize="12sp" />
+
+        <RelativeLayout
+            android:id="@+id/rl_send_msg"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/round_green_button"
+            android:clickable="true">
+
+            <com.org.pawpal.custom.CustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/iv_send_icon"
+                android:gravity="center"
+                android:text="Send Reply"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:id="@+id/iv_send_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:src="@mipmap/send_msg" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+</RelativeLayout>

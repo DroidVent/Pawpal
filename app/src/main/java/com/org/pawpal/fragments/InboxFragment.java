@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.org.pawpal.MyApplication;
 import com.org.pawpal.R;
@@ -40,17 +40,20 @@ public class InboxFragment extends Fragment implements OnInboxListener, SwipeRef
     private View view;
     private RecyclerView recyclerViewInbox;
     private LinearLayoutManager linearLayoutManager;
-    private ArrayList<Message> messages;
+    private ArrayList<Message> inboxMessages;
     private InboxAdapter inboxAdapter;
     private ProgressBar progressBar;
     private CompositeSubscription compositeSubscription;
     private DashboardActivity dashboardActivity;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private TextView tvNoResult, tvCount;
+    private int size;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_inbox, container, false);
         init();
+        getInboxMessages();
         return view;
     }
 
@@ -59,16 +62,13 @@ public class InboxFragment extends Fragment implements OnInboxListener, SwipeRef
         compositeSubscription = new CompositeSubscription();
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh);
-        messages = new ArrayList<>();
-        Message message = new Message();
-        message.setReply("");
-        messages.add(message);
-        messages.add(message);
-        messages.add(message);
+        inboxMessages = new ArrayList<>();
+        tvNoResult = (TextView)view.findViewById(R.id.tv_no_result);
+        tvCount = (TextView)view.findViewById(R.id.tv_count_msg);
         recyclerViewInbox = (RecyclerView) view.findViewById(R.id.rv_inbox);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewInbox.setLayoutManager(linearLayoutManager);
-        inboxAdapter = new InboxAdapter(messages, this);
+        inboxAdapter = new InboxAdapter(getContext(), inboxMessages, this);
         recyclerViewInbox.setAdapter(inboxAdapter);
         swipeRefreshLayout.setOnRefreshListener(this);
     }
@@ -101,28 +101,45 @@ public class InboxFragment extends Fragment implements OnInboxListener, SwipeRef
                         swipeRefreshLayout.setRefreshing(false);
                         recyclerViewInbox.setVisibility(View.VISIBLE);
                         if (Integer.valueOf(getInboxMessageResponse.getCode()) == Constants.SUCCESS_CODE) {
-                            messages.clear();
-                            messages.addAll(getInboxMessageResponse.getMessages());
-                            inboxAdapter.notifyDataSetChanged();
+                            ArrayList<Message> messages = getInboxMessageResponse.getInboxResponse().getMessages();
+                            size = messages.size();
+                            if (messages != null && size != 0)
+                            {
+                                tvCount.setText("You have "+ size +" conversation(s)");
+                                inboxMessages.clear();
+                                inboxMessages.addAll(messages);
+                                tvNoResult.setVisibility(View.GONE);
+                                inboxAdapter.notifyDataSetChanged();
+                            }
+                            else
+                            {
+                                tvCount.setVisibility(View.GONE);
+                                tvNoResult.setVisibility(View.VISIBLE);
+                            }
+
+
                         } else
                             dashboardActivity.showSnackBar(getString(R.string.wrong), (LinearLayout) view.findViewById(R.id.parent_view));
                     }
                 }));
     }
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeSubscription.unsubscribe();
+    }
     @Override
     public void onStarClicked(int position) {
-        Toast.makeText(getContext(), "star", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onArchieveClicked(int position) {
-        Toast.makeText(getContext(), "archieve", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onItemClicked(int position) {
         Intent intent = new Intent(getContext(), ConversationActivity.class);
+        intent.putExtra("thread_id", inboxMessages.get(position).getThread_id());
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.bottom_up, R.anim.bottom_down);
     }
@@ -133,6 +150,6 @@ public class InboxFragment extends Fragment implements OnInboxListener, SwipeRef
 
     @Override
     public void onRefresh() {
-        swipeRefreshLayout.setRefreshing(true);
+        getInboxMessages();
     }
 }

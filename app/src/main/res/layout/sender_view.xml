@@ -29,7 +29,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
+ <!--           <com.org.pawpal.custom.CustomTextView
+                android:id="@+id/tv_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hinter "
+                android:visibility="gone"
+                android:textColor="@color/light_blue_color" />-->
             <com.org.pawpal.custom.CustomTextView
                 android:id="@+id/tv_msg"
                 android:layout_width="wrap_content"
@@ -41,7 +47,7 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:paddingTop="20dp"
-                android:text="This is a test message This is a test messageThis is a test messageThis is a test messageThis is a test messageThis is a test messageThis is a test messageThis is a test messageThis is a test messageThis is a test message"
+                android:text="This is a test conversation This is a test messageThis is a test messageThis is a test messageThis is a test messageThis is a test messageThis is a test messageThis is a test messageThis is a test messageThis is a test conversation"
                 android:textColor="@color/light_blue_color" />
 
             <de.hdodenhof.circleimageview.CircleImageView

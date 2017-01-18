@@ -179,7 +179,7 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
             toolbar.setTitle(getString(R.string.findpal));
             launchFragment(homeFragment, "findpal");
         } else if (groupPosition == 2) {
-            toolbar.setTitle(getString(R.string.messages));
+            toolbar.setTitle(getString(R.string.conversations));
             switch (childPosition) {
                 case 0:
                     Fragment inboxFragment = new InboxFragment();

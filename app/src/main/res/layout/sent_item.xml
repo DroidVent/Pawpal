@@ -63,7 +63,7 @@
                 android:layout_gravity="center"
                 android:paddingBottom="20dp"
                 android:paddingTop="10dp"
-                android:text="This is a test message " />
+                android:text="This is a test conversation " />
         </LinearLayout>
 
 

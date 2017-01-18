@@ -5,59 +5,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/parent_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/card_view"
+        <LinearLayout
+            android:id="@+id/parent_view"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            card_view:cardCornerRadius="4dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/rl_sent"
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view"
                 android:layout_width="match_parent"
-                android:layout_height="50dp">
+                android:layout_height="50dp"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                card_view:cardCornerRadius="4dp">
 
-                <ImageView
-                    android:id="@+id/iv_inbox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="20dp"
-                    android:src="@mipmap/icon_sent" />
-
-                <com.org.pawpal.custom.CustomTextView
-                    android:id="@+id/tv_sent"
+                <RelativeLayout
+                    android:id="@+id/rl_sent"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_toRightOf="@+id/iv_inbox"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="20dp"
-                    android:text="Sent"
-                    android:textColor="@color/light_blue_color"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
+                    android:layout_height="50dp">
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
+                    <ImageView
+                        android:id="@+id/iv_inbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:src="@mipmap/icon_sent" />
+
+                    <com.org.pawpal.custom.CustomTextView
+                        android:id="@+id/tv_sent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@+id/iv_inbox"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="20dp"
+                        android:text="Sent"
+                        android:textColor="@color/light_blue_color"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:visibility="gone" />
+
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_sent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="15dp" />
+        </LinearLayout>
+        <com.org.pawpal.custom.CustomTextView
+            android:id="@+id/tv_no_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:visibility="gone" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_sent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="15dp"></android.support.v7.widget.RecyclerView>
-    </LinearLayout>
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:text="No result found" />
+    </RelativeLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

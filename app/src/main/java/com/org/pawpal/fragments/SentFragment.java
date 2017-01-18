@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.org.pawpal.MyApplication;
 import com.org.pawpal.R;
@@ -42,16 +43,18 @@ public class SentFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private CompositeSubscription compositeSubscription;
     private DashboardActivity dashboardActivity;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private TextView tvNoResult;
 
     @Override
     public void onRefresh() {
-
+        getSentMessages();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_sent, container, false);
         init();
+        getSentMessages();
         return view;
     }
 
@@ -61,15 +64,11 @@ public class SentFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         messages = new ArrayList<>();
-        Message message = new Message();
-        message.setReply("");
-        messages.add(message);
-        messages.add(message);
-        messages.add(message);
+        tvNoResult = (TextView)view.findViewById(R.id.tv_no_result);
         recyclerViewSent = (RecyclerView) view.findViewById(R.id.rv_sent);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewSent.setLayoutManager(linearLayoutManager);
-        sentAdapter = new SentAdapter(messages);
+        sentAdapter = new SentAdapter(messages, getContext());
         recyclerViewSent.setAdapter(sentAdapter);
         swipeRefreshLayout.setOnRefreshListener(this);
     }
@@ -102,9 +101,17 @@ public class SentFragment extends Fragment implements SwipeRefreshLayout.OnRefre
                         swipeRefreshLayout.setRefreshing(false);
                         recyclerViewSent.setVisibility(View.VISIBLE);
                         if (Integer.valueOf(response.getCode()) == Constants.SUCCESS_CODE) {
-                            messages.clear();
-                            messages.addAll(response.getMessages());
-                            sentAdapter.notifyDataSetChanged();
+                            ArrayList<Message> messages = response.getResponse().getMessages();
+                            if (messages.size() != 0)
+                            {
+                                SentFragment.this.messages.clear();
+                                tvNoResult.setVisibility(View.GONE);
+                                SentFragment.this.messages.addAll(messages);
+                                sentAdapter.notifyDataSetChanged();
+                            }
+                            else
+                                tvNoResult.setVisibility(View.VISIBLE);
+
                         } else
                             dashboardActivity.showSnackBar(getString(R.string.wrong), (LinearLayout) view.findViewById(R.id.parent_view));
                     }
@@ -113,5 +120,10 @@ public class SentFragment extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private void showHideProgressBar(int visible) {
         progressBar.setVisibility(visible);
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeSubscription.unsubscribe();
     }
 }

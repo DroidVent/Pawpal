@@ -5,6 +5,7 @@ import com.org.pawpal.model.FavoriteResponse;
 import com.org.pawpal.model.FilterPal;
 import com.org.pawpal.model.GetInboxMessageResponse;
 import com.org.pawpal.model.GetSentMessageResponse;
+import com.org.pawpal.model.GetThreadMessageResponse;
 import com.org.pawpal.model.Login;
 import com.org.pawpal.model.PalActivitiyResponse;
 import com.org.pawpal.model.PostMessage;
@@ -61,9 +62,12 @@ public interface PawPalAPI {
     @POST("message/send_message.json")
     Observable<SendMessageResponse> sendMessage(@Body PostMessage postMessage);
 
-    @GET("message/get_inbox.json")
+    @GET("message/get_user_inbox_messages.json")
     Observable<GetInboxMessageResponse> getInboxMessages(@Query("profile_id") String profile_id);
 
-    @GET("message/get_sent_messages.json")
+    @GET("message/get_user_sent_messages.json")
     Observable<GetSentMessageResponse> getSentMessages(@Query("profile_id") String profile_id);
+
+    @GET("message/get_thread_detail.json")
+    Observable<GetThreadMessageResponse> getThreadMessages(@Query("profile_id") String profile_id,@Query("thread_id") String thread_id);
 }

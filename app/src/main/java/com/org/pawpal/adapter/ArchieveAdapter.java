@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.org.pawpal.R;
-import com.org.pawpal.model.Message;
+import com.org.pawpal.model.Conversation;
 
 import java.util.ArrayList;
 
@@ -17,9 +17,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by hp-pc on 16-01-2017.
  */
 public class ArchieveAdapter extends RecyclerView.Adapter<ArchieveAdapter.MyViewHolder> {
-    ArrayList<Message> messages;
-    public ArchieveAdapter(ArrayList<Message> messages) {
-        this.messages = messages;
+    ArrayList<Conversation> conversations;
+    public ArchieveAdapter(ArrayList<Conversation> conversations) {
+        this.conversations = conversations;
     }
     @Override
     public ArchieveAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -31,13 +31,13 @@ public class ArchieveAdapter extends RecyclerView.Adapter<ArchieveAdapter.MyView
 
     @Override
     public void onBindViewHolder(ArchieveAdapter.MyViewHolder holder, final int position) {
-        Message message = messages.get(position);
+        Conversation conversation = conversations.get(position);
 
     }
 
     @Override
     public int getItemCount() {
-        return messages.size();
+        return conversations.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

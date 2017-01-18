@@ -13,7 +13,7 @@
         <item
             android:id="@+id/nav_messages"
             android:icon="@mipmap/messages"
-            android:title="@string/messages">
+            android:title="@string/conversations">
 
         </item>
         <item

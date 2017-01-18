@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import com.org.pawpal.R;
 import com.org.pawpal.activities.DashboardActivity;
 import com.org.pawpal.adapter.ArchieveAdapter;
-import com.org.pawpal.model.Message;
+import com.org.pawpal.model.Conversation;
 
 import java.util.ArrayList;
 
@@ -28,7 +28,7 @@ public class ArchieveFragment extends Fragment implements SwipeRefreshLayout.OnR
     private View view;
     private RecyclerView recyclerViewArchieve;
     private LinearLayoutManager linearLayoutManager;
-    private ArrayList<Message> messages;
+    private ArrayList<Conversation> conversations;
     private ArchieveAdapter archieveAdapter;
     private ProgressBar progressBar;
     private CompositeSubscription compositeSubscription;
@@ -50,17 +50,23 @@ public class ArchieveFragment extends Fragment implements SwipeRefreshLayout.OnR
         compositeSubscription = new CompositeSubscription();
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
-        messages = new ArrayList<>();
-        Message message = new Message();
-        message.setReply("");
-        messages.add(message);
-        messages.add(message);
-        messages.add(message);
+        conversations = new ArrayList<>();
+        Conversation conversation = new Conversation();
+        conversation.setReply("");
+        conversations.add(conversation);
+        conversations.add(conversation);
+        conversations.add(conversation);
         recyclerViewArchieve = (RecyclerView) view.findViewById(R.id.rv_sent);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewArchieve.setLayoutManager(linearLayoutManager);
-        archieveAdapter = new ArchieveAdapter(messages);
+        archieveAdapter = new ArchieveAdapter(conversations);
         recyclerViewArchieve.setAdapter(archieveAdapter);
         swipeRefreshLayout.setOnRefreshListener(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeSubscription.unsubscribe();
     }
 }
