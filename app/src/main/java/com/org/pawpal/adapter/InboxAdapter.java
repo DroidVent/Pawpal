@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.org.pawpal.R;
+import com.org.pawpal.custom.CustomTextView;
 import com.org.pawpal.interfaces.OnInboxListener;
 import com.org.pawpal.model.Message;
 import com.squareup.picasso.Picasso;
@@ -45,7 +46,18 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.MyViewHolder
         Message message = messages.get(position);
         Integer isStar = message.getIsFav();
         if (isStar == null || isStar == 0)
+        {
             holder.ivStar.setVisibility(View.GONE);
+            holder.tvStarUnStar.setText("Star");
+            holder.ivStarUnstar.setImageResource(R.mipmap.star_dark);
+        }
+        else
+        {
+            holder.ivStar.setVisibility(View.VISIBLE);
+            holder.tvStarUnStar.setText("Unstar");
+            holder.ivStarUnstar.setImageResource(R.mipmap.unstar);
+        }
+
         holder.tvMessage.setText(message.getMessage_text());
         holder.tvDate.setText(message.getCreated_date());
         holder.tvUsername.setText(message.getName());
@@ -88,11 +100,11 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.MyViewHolder
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public View item;
         public RelativeLayout starUnstar, archieve;
-        private ImageView ivStar;
+        private ImageView ivStar, ivStarUnstar;
         private TextView tvDate, tvMessage;
         private CircleImageView ivProfile;
         public TextView tvUsername;
-
+        public TextView tvStarUnStar;
         public MyViewHolder(View itemView) {
             super(itemView);
             item = itemView;
@@ -103,6 +115,8 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.MyViewHolder
             tvMessage = (TextView)item.findViewById(R.id.tv_msg);
             tvUsername = (TextView)item.findViewById(R.id.tv_username);
             ivProfile = (CircleImageView)item.findViewById(R.id.profile_image);
+            tvStarUnStar = (CustomTextView)item.findViewById(R.id.tv_star_unstar);
+            ivStarUnstar = (ImageView)item.findViewById(R.id.iv_star_unstar);
         }
     }
 }

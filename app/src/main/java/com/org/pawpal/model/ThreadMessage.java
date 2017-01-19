@@ -49,4 +49,6 @@ public class ThreadMessage {
     public void setProfile_image(String profile_image) {
         this.profile_image = profile_image;
     }
+
+
 }

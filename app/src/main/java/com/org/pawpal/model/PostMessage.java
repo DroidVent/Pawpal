@@ -8,6 +8,7 @@ public class PostMessage {
     private String user_profile_id;
     private String message_text;
     private String profile_id;
+    private String thread_id;
 
     public String getProfile_id() {
         return profile_id;
@@ -31,5 +32,13 @@ public class PostMessage {
 
     public void setUser_profile_id(String user_profile_id) {
         this.user_profile_id = user_profile_id;
+    }
+
+    public String getThread_id() {
+        return thread_id;
+    }
+
+    public void setThread_id(String thread_id) {
+        this.thread_id = thread_id;
     }
 }

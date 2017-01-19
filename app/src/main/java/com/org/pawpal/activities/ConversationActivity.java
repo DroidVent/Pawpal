@@ -44,10 +44,10 @@ public class ConversationActivity extends BaseActivity {
     private ArrayList<ThreadMessage> threadMessages;
     private ConversationAdapter conversationAdapter;
     private CompositeSubscription compositeSubscription;
-    private String threadId;
+    private String threadId, otherUserProfileId;
     private ProgressBar progressBar;
     private CircleImageView ivProfileImage;
-    private TextView tvCOnversationWith, tvMemberSince, tvDistance;
+    private TextView tvCOnversationUser,tvConversationWith, tvMemberSince, tvDistance;
     private RelativeLayout sendMessage;
     private EditText etMsg;
     @Override
@@ -71,12 +71,13 @@ public class ConversationActivity extends BaseActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(conversations));
         threadMessages = new ArrayList<>();
-        tvCOnversationWith = (TextView)findViewById(R.id.tv_username);
+        tvCOnversationUser = (TextView)findViewById(R.id.tv_username);
         sendMessage = (RelativeLayout)findViewById(R.id.rl_send_msg);
         etMsg = (EditText)findViewById(R.id.et_msg);
         ivProfileImage = (CircleImageView) findViewById(R.id.profile_image);
         tvMemberSince = (TextView)findViewById(R.id.tv_member_txt);
         tvDistance = (TextView)findViewById(R.id.tv_location);
+        tvConversationWith = (TextView)findViewById(R.id.tv_conversation_with_user);
         progressBar = (ProgressBar)findViewById(R.id.progress_bar);
         recyclerViewConversation = (RecyclerView) findViewById(R.id.rv_messages);
         linearLayoutManager = new LinearLayoutManager(this);
@@ -95,7 +96,8 @@ public class ConversationActivity extends BaseActivity {
         progressBar.setVisibility(View.VISIBLE);
         PostMessage postMessage = new PostMessage();
         postMessage.setMessage_text(message);
-        postMessage.setUser_profile_id("128");
+        postMessage.setUser_profile_id(otherUserProfileId);
+        postMessage.setThread_id(threadId);
         postMessage.setProfile_id(PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID));
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().sendMessage(postMessage)
                 .subscribeOn(Schedulers.newThread())
@@ -116,12 +118,13 @@ public class ConversationActivity extends BaseActivity {
                     public void onNext(SendMessageResponse sendMessageResponse) {
                         progressBar.setVisibility(View.GONE);
                         if (Integer.valueOf(sendMessageResponse.getCode()) == Constants.SUCCESS_CODE) {
-                            ThreadMessage threadMessage = new ThreadMessage();
-                            threadMessage.setMessage_text(message);
+                            ThreadMessage threadMessage = sendMessageResponse.getThreadMessage();
                             threadMessage.setIs_own_msg(1);
-                            threadMessage.setCreated_date("18 Jan 2017");
                             threadMessages.add(threadMessage);
                             conversationAdapter.notifyDataSetChanged();
+                            recyclerViewConversation.smoothScrollToPosition(conversationAdapter.getItemCount()-1);
+                            etMsg.setText("");
+                            hideKeyBoard();
                         } else
                             showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
                     }
@@ -147,6 +150,7 @@ public class ConversationActivity extends BaseActivity {
     }
 
     private void getMessages() {
+        showHideProgressBar(View.VISIBLE);
         recyclerViewConversation.setVisibility(View.GONE);
         String profileId = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID);
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getThreadMessages(profileId, threadId)
@@ -178,6 +182,7 @@ public class ConversationActivity extends BaseActivity {
                                 threadMessages.addAll(messages);
                                 conversationAdapter = new ConversationAdapter(ConversationActivity.this, threadMessages, response.getResponse().getProfile().getName());
                                 recyclerViewConversation.setAdapter(conversationAdapter);
+                                otherUserProfileId = response.getResponse().getProfile().getProfile_id();
 //                                conversationAdapter.notifyDataSetChanged();
                             }
 
@@ -190,8 +195,9 @@ public class ConversationActivity extends BaseActivity {
 
     private void setData(ThreadMessageResponse response) {
         ThreadProfile threadProfile = response.getProfile();
-        tvCOnversationWith.setText(threadProfile.getName());
+        tvCOnversationUser.setText(threadProfile.getName());
         tvMemberSince.setText(threadProfile.getProfile_created_at());
+        tvConversationWith.setText("Conversation with "+threadProfile.getName());
         tvDistance.setText(threadProfile.getDistance()+" from you");
         if (threadProfile.getUserImages() != null && threadProfile.getUserImages().size() != 0)
         {

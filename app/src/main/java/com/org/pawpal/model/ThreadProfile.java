@@ -17,6 +17,9 @@ public class ThreadProfile {
     @SerializedName("name")
     private String name;
 
+    @SerializedName("profile_id")
+    private String profile_id;
+
     @SerializedName("images")
     private ArrayList<UserImages> userImages;
 
@@ -50,5 +53,12 @@ public class ThreadProfile {
 
     public void setUserImages(ArrayList<UserImages> userImages) {
         this.userImages = userImages;
+    }
+    public String getProfile_id() {
+        return profile_id;
+    }
+
+    public void setProfile_id(String profile_id) {
+        this.profile_id = profile_id;
     }
 }

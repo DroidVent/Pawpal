@@ -15,7 +15,7 @@ public class PrefManager {
         settings.edit().clear().commit();
     }
 
-    public static enum PersistenceKey {USER_ID,USER_NAME,PROFILE_ID, SEARCH_PAL_FILTERS}
+    public static enum PersistenceKey {USER_ID,USER_NAME,PROFILE_ID, SEARCH_PAL_FILTERS, PROFILE_IMAGE}
 
 
     public static void store(Context context, PersistenceKey key, String value){

@@ -20,6 +20,9 @@ import com.org.pawpal.fragments.HomeFragment;
 import com.org.pawpal.fragments.InboxFragment;
 import com.org.pawpal.fragments.NavigationDrawerFragment;
 import com.org.pawpal.fragments.SentFragment;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by hp-pc on 03-12-2016.
@@ -32,6 +35,7 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
 
         private NavigationView navigationView;*/
     private TextView username;
+    private CircleImageView ivPhoto;
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
     private CharSequence mTitle;
@@ -51,11 +55,19 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         username = (TextView) mDrawerLayout.findViewById(R.id.tv_username);
+        ivPhoto = (CircleImageView)mDrawerLayout.findViewById(R.id.profile_image);
         setUsername();
         onNavigationDrawerItemSelected(0, -1);
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String photo = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_IMAGE);
+        if (!photo.equals("null") && !photo.equals(""))
+            Picasso.with(this).load(photo).fit().centerCrop().placeholder(R.mipmap.img_default).into(ivPhoto);
+    }
 
     private void setUsername() {
 

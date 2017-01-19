@@ -134,6 +134,8 @@ public class LoginActivity extends BaseActivity {
         PrefManager.store(this, PrefManager.PersistenceKey.USER_ID, data.getUser_id());
         PrefManager.store(this, PrefManager.PersistenceKey.PROFILE_ID, data.getProfile_id());
         PrefManager.store(this, PrefManager.PersistenceKey.USER_NAME, data.getName());
+        if (data.getImages() != null && data.getImages().size() !=0 )
+            PrefManager.store(this, PrefManager.PersistenceKey.PROFILE_IMAGE, data.getImages().get(0).getUrl());
     }
 
     public boolean isEmailValid(String email) {

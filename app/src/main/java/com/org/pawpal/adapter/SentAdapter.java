@@ -41,6 +41,7 @@ public class SentAdapter  extends RecyclerView.Adapter<SentAdapter.MyViewHolder>
         Message message = messages.get(position);
         Log.e("Sent",""+message.getMessage_text().trim());
         holder.tvMsg.setText(message.getMessage_text());
+
         holder.tvDate.setText(message.getCreated_date());
         holder.tvUsername.setText(message.getName());
         String image;

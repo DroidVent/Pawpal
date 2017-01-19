@@ -1,5 +1,7 @@
 package com.org.pawpal.model;
 
+import java.util.ArrayList;
+
 /**
  * Created by hp-pc on 25-11-2016.
  */
@@ -7,6 +9,7 @@ public class UserData {
     private String user_id;
     private String profile_id;
     private String name;
+    private ArrayList<UserImages> images;
 
     public String getUser_id() {
         return user_id;
@@ -30,5 +33,13 @@ public class UserData {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ArrayList<UserImages> getImages() {
+        return images;
+    }
+
+    public void setImages(ArrayList<UserImages> images) {
+        this.images = images;
     }
 }

@@ -147,7 +147,7 @@
                     android:src="@mipmap/star_dark" />
 
                 <com.org.pawpal.custom.CustomTextView
-                    android:id="@+id/tv_star_unstart"
+                    android:id="@+id/tv_star_unstar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/iv_star_unstar"

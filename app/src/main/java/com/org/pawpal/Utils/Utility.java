@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.format.DateFormat;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -227,5 +228,11 @@ public class Utility {
         }
         fOut.close();
         return file.getPath();
+    }
+    public static String formatMessageDate()
+    {
+        Date d = new Date();
+        CharSequence date  = DateFormat.format("d MMM yyyy ", d.getTime());
+        return String.valueOf(date);
     }
 }

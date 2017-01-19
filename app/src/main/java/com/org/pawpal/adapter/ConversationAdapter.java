@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.org.pawpal.R;
 import com.org.pawpal.Utils.Constants;
+import com.org.pawpal.Utils.PrefManager;
 import com.org.pawpal.model.ThreadMessage;
 import com.squareup.picasso.Picasso;
 
@@ -25,11 +26,13 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     private ArrayList<ThreadMessage> threadMessages;
     private Context context;
     private String username;
+    private String ownPhoto;
 
     public ConversationAdapter(Context context, ArrayList<ThreadMessage> conversations, String name) {
         this.threadMessages = conversations;
         this.context = context;
         this.username = name;
+        ownPhoto = PrefManager.retrieve(context, PrefManager.PersistenceKey.PROFILE_IMAGE);
     }
 
     @Override
@@ -72,7 +75,8 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
                 Picasso.with(context).load(image).fit().centerCrop().placeholder(R.mipmap.img_default).into(holder.ivProfile);
             }
         }
-
+        else
+            Picasso.with(context).load(ownPhoto).fit().centerCrop().placeholder(R.mipmap.img_default).into(holder.ivProfile);
 
     }
 

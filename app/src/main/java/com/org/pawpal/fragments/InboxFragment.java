@@ -140,6 +140,7 @@ public class InboxFragment extends Fragment implements OnInboxListener, SwipeRef
     public void onItemClicked(int position) {
         Intent intent = new Intent(getContext(), ConversationActivity.class);
         intent.putExtra("thread_id", inboxMessages.get(position).getThread_id());
+//        intent.putExtra("profile_id", inboxMessages.get(position).getProfile_id());
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.bottom_up, R.anim.bottom_down);
     }
