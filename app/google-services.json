@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "980516055767",
+    "firebase_url": "https://pawpal-cd390.firebaseio.com",
+    "project_id": "pawpal-cd390",
+    "storage_bucket": "pawpal-cd390.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:980516055767:android:22d4808a59163789",
+        "android_client_info": {
+          "package_name": "com.org.pawpal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "980516055767-7fvl8t590678o3skgk6sf8tcavfqo4gg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.org.pawpal",
+            "certificate_hash": "DA12A46ACECBD9D85E62DDF4FFEA0D4B4C773AE2"
+          }
+        },
+        {
+          "client_id": "980516055767-94p79u60f52d0sp2kgros16gmojuf8sb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwavanqzP5tnlkqSdeRvTJsm6tVyQKq6A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "980516055767-94p79u60f52d0sp2kgros16gmojuf8sb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
