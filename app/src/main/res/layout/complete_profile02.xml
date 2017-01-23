@@ -135,7 +135,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:background="@drawable/round_green_button"
-                android:text="@string/create" />
+                android:text="@string/update" />
         </LinearLayout>
     </LinearLayout>
     <ProgressBar

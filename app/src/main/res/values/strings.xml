@@ -57,7 +57,7 @@
     <string name="filter">Filter</string>
     <string name="location">Location</string>
     <string name="age_limit_msg">Your age should be minimum 18 years</string>
-    <string name="create">Create</string>
+    <string name="update">Update</string>
     <string name="text_gallery_usage">You did not allow gallery usage!</string>
     <string name="text_write_usage">You did not allow write permission!</string>
 

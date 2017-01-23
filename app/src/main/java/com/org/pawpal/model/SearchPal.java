@@ -38,6 +38,10 @@ public class SearchPal implements Parcelable{
         userImages = in.createTypedArrayList(UserImages.CREATOR);
         profile_type = in.readString();
     }
+    public SearchPal()
+    {
+
+    }
 
     public static final Creator<SearchPal> CREATOR = new Creator<SearchPal>() {
         @Override

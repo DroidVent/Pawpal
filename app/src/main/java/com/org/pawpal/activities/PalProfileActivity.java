@@ -33,6 +33,8 @@ import com.org.pawpal.model.UserImages;
 import com.org.pawpal.model.UserProfileData;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +53,7 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
     private RecyclerView recyclerViewActivities;
     private SearchPal searchPal;
     private ImageView ivProfileImageView;
-    private TextView tvUserType, tvMemberSince, tvLoginAt, tvLocation, tvSize, tvPeriod, tvName;
+    private TextView tvUserType, tvMemberSince, tvLoginAt, tvLocation, tvSize, tvPeriod, tvName, tvDescription;
     private LinearLayoutManager imagesLayoutManager;
     private List<UserImages> userImages;
     private HorizontalRVAdapter activitiesAdapter;
@@ -59,6 +61,7 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
     private ProgressBar progressBar;
     private CompositeSubscription compositeSubscription;
     private SendMessageDialog dialogFragment;
+    private String otherUserProfileId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,7 +78,7 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         }
         else
         {
-
+            getOtherProfileData();
         }
 
 
@@ -85,7 +88,7 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         progressBar.setVisibility(View.VISIBLE);
 
         String profileID = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID);
-        compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getOtherProfile(profileID, )
+        compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getOtherProfile(profileID, otherUserProfileId)
                 .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Profile>() {
                     @Override
                     public void onCompleted() {
@@ -104,8 +107,10 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
 
                         progressBar.setVisibility(View.GONE);
                         if (Integer.valueOf(profile.getCode()) == Constants.SUCCESS_CODE) {
+                            searchPal = new SearchPal();
                             UserProfileData otherUserProfileData = profile.getUserData();
-                            searchPal.setPalActivities(otherUserProfileData.getActivities());
+                            if (otherUserProfileData.getActivities() != null)
+                                searchPal.setPalActivities(otherUserProfileData.getActivities());
                             searchPal.setId(otherUserProfileData.getProfile_id());
                             searchPal.setLast_login(otherUserProfileData.getLast_login());
                             searchPal.setDistance(otherUserProfileData.getDistance());
@@ -138,6 +143,7 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         String UserType = searchPal.getProfile_type();
         String size = searchPal.getPet_size();
         String name = searchPal.getName();
+        String description = searchPal.getDescription();
         if (!Utility.isEmptyString(createdAt)) {
             if (Utility.isDateValid(createdAt,"yyyy-MM-dd hh:mm:ss"))
                 tvMemberSince.setText(Utility.formatDate(createdAt));
@@ -148,7 +154,12 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         if (!Utility.isEmptyString(LoginAt))
             tvLoginAt.setText(Utility.formatDate(LoginAt));
         if (!Utility.isEmptyString(Location))
-            tvLocation.setText(Location + " from you");
+        {
+            NumberFormat formatter = new DecimalFormat("#0.00");
+            formatter.format(Double.parseDouble(Location));
+            tvLocation.setText(formatter + " from you");
+        }
+
         if (!Utility.isEmptyString(Period))
             tvPeriod.setText(Period);
         if (!Utility.isEmptyString(UserType))
@@ -157,6 +168,8 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
             setSizeValue(size);
         if (!Utility.isEmptyString(name))
             tvName.setText(name);
+        if (!Utility.isEmptyString(description))
+            tvDescription.setText(description);
         if (searchPal.getUserImages().size() != 0)
             Picasso.with(this).load(searchPal.getUserImages().get(0).getUrl()).fit().centerCrop().placeholder(R.mipmap.img_default).into(ivProfileImageView);
     }
@@ -175,7 +188,9 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         userImages = new ArrayList<>();
         if (bundle != null) {
             searchPal = (SearchPal) bundle.get("profile");
-            userImages.addAll(searchPal.getUserImages());
+            otherUserProfileId = bundle.getString("other_user_profile");
+            if (searchPal != null)
+                userImages.addAll(searchPal.getUserImages());
         }
     }
 
@@ -218,6 +233,7 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         tvLocation = (TextView) findViewById(R.id.tv_location);
         tvSize = (TextView) findViewById(R.id.tv_size);
         tvPeriod = (TextView) findViewById(R.id.tv_period);
+        tvDescription = (TextView) findViewById(R.id.tv_description);
         tvUserType = (TextView) findViewById(R.id.tv_usertype);
         addFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -311,6 +327,7 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         progressBar.setVisibility(View.GONE);
                         showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
                     }

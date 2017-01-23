@@ -101,6 +101,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnIt
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                         progressBar.setVisibility(View.GONE);
                         dashboardActivity.showSnack(getString(R.string.wrong));
                     }
@@ -122,6 +123,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnIt
     @Override
     public void onClicked(int position) {
         Intent intent = new Intent(getContext(), PalProfileActivity.class);
+        intent.putExtra("other_user_profile", favorites.get(position).getId());
         startActivity(intent);
     }
 }
