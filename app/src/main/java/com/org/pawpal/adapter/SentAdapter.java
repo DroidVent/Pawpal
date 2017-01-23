@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.org.pawpal.R;
+import com.org.pawpal.interfaces.OnItemClickListener;
 import com.org.pawpal.model.Message;
 import com.squareup.picasso.Picasso;
 
@@ -22,10 +23,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SentAdapter  extends RecyclerView.Adapter<SentAdapter.MyViewHolder> {
     private ArrayList<Message> messages;
     Context context;
+    private OnItemClickListener onItemClickListener;
 
-    public SentAdapter(ArrayList<Message> messages, Context context) {
+    public SentAdapter(ArrayList<Message> messages, Context context,OnItemClickListener onItemClickListener ) {
         this.messages = messages;
         this.context = context;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -51,7 +54,13 @@ public class SentAdapter  extends RecyclerView.Adapter<SentAdapter.MyViewHolder>
                 image = message.getImages().get(0).getUrl();
                 Picasso.with(context).load(image).fit().centerCrop().placeholder(R.mipmap.img_default).into(holder.ivProfile);
             }
-
+        holder.item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onItemClickListener != null)
+                    onItemClickListener.onClicked(position);
+            }
+        });
     }
 
     @Override

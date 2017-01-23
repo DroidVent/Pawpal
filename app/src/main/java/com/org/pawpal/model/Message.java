@@ -12,6 +12,7 @@ public class Message {
     private String name;
     private int isFav;
     private int profile_id;
+    private int other_user_profile_id;
     private ArrayList<UserImages> images;
 
     public int getProfile_id() {
@@ -68,5 +69,13 @@ public class Message {
 
     public void setIsFav(int isFav) {
         this.isFav = isFav;
+    }
+
+    public int getOther_user_profile_id() {
+        return other_user_profile_id;
+    }
+
+    public void setOther_user_profile_id(int other_user_profile) {
+        this.other_user_profile_id = other_user_profile;
     }
 }

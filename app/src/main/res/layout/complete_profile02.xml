@@ -34,6 +34,12 @@
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
                 android:src="@mipmap/upload" />
+            <ProgressBar
+                android:id="@+id/progress_bar_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_centerInParent="true"/>
         </RelativeLayout>
 
         <LinearLayout
@@ -54,6 +60,12 @@
                     android:adjustViewBounds="true"
                     android:scaleType="centerInside"
                     android:src="@mipmap/upload" />
+                <ProgressBar
+                    android:id="@+id/progress_bar_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -71,6 +83,12 @@
                     android:adjustViewBounds="true"
                     android:scaleType="centerInside"
                     android:src="@mipmap/upload" />
+                <ProgressBar
+                    android:id="@+id/progress_bar_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -88,6 +106,12 @@
                     android:adjustViewBounds="true"
                     android:scaleType="centerInside"
                     android:src="@mipmap/upload" />
+                <ProgressBar
+                    android:id="@+id/progress_bar_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"/>
             </RelativeLayout>
 
             <RelativeLayout
@@ -106,6 +130,12 @@
                     android:adjustViewBounds="true"
                     android:scaleType="centerInside"
                     android:src="@mipmap/upload" />
+                <ProgressBar
+                    android:id="@+id/progress_bar_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"/>
             </RelativeLayout>
         </LinearLayout>
 

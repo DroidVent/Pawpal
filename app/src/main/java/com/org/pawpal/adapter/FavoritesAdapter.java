@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.org.pawpal.R;
 import com.org.pawpal.interfaces.OnItemClickListener;
 import com.org.pawpal.model.Favorite;
+import com.org.pawpal.model.UserImages;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -53,6 +55,9 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.MyVi
                 }
             }
         });
+        List<UserImages> userImage = favorite.getImages();
+        if (userImage != null && userImage.size() != 0 )
+            Picasso.with(context).load(favorite.getImages().get(0).getUrl()).placeholder(R.mipmap.img_default).into(holder.imageView);
     }
 
     @Override

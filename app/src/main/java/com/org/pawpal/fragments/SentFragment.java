@@ -1,5 +1,6 @@
 package com.org.pawpal.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,8 +18,10 @@ import com.org.pawpal.MyApplication;
 import com.org.pawpal.R;
 import com.org.pawpal.Utils.Constants;
 import com.org.pawpal.Utils.PrefManager;
+import com.org.pawpal.activities.ConversationActivity;
 import com.org.pawpal.activities.DashboardActivity;
 import com.org.pawpal.adapter.SentAdapter;
+import com.org.pawpal.interfaces.OnItemClickListener;
 import com.org.pawpal.model.GetSentMessageResponse;
 import com.org.pawpal.model.Message;
 
@@ -33,7 +36,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by hp-pc on 16-01-2017.
  */
 
-public class SentFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class SentFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnItemClickListener {
     private View view;
     private RecyclerView recyclerViewSent;
     private LinearLayoutManager linearLayoutManager;
@@ -68,7 +71,7 @@ public class SentFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         recyclerViewSent = (RecyclerView) view.findViewById(R.id.rv_sent);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewSent.setLayoutManager(linearLayoutManager);
-        sentAdapter = new SentAdapter(messages, getContext());
+        sentAdapter = new SentAdapter(messages, getContext(), this);
         recyclerViewSent.setAdapter(sentAdapter);
         swipeRefreshLayout.setOnRefreshListener(this);
     }
@@ -125,5 +128,20 @@ public class SentFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public void onDestroy() {
         super.onDestroy();
         compositeSubscription.unsubscribe();
+    }
+
+    @Override
+    public void onClicked(int position) {
+        if (messages.get(position).getOther_user_profile_id() != 0)
+        {
+            Intent intent = new Intent(getContext(), ConversationActivity.class);
+            intent.putExtra("thread_id", messages.get(position).getThread_id());
+//        intent.putExtra("profile_id", inboxMessages.get(position).getProfile_id());
+            startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.bottom_up, R.anim.bottom_down);
+        }
+        else
+            dashboardActivity.showSnackBar("There is some issue with this profile", (LinearLayout) view.findViewById(R.id.parent_view));
+
     }
 }

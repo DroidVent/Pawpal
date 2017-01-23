@@ -34,12 +34,12 @@ import com.org.pawpal.Utils.Utility;
 import com.org.pawpal.model.PostProfile;
 import com.org.pawpal.model.UpdateProfile;
 import com.org.pawpal.model.UserImages;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import rx.Observer;
@@ -51,7 +51,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by hp-pc on 20-12-2016.
  */
 
-public class CompleteProfile02Activity extends BaseActivity implements View.OnClickListener {
+public class CompleteProfile02Activity extends BaseActivity implements View.OnClickListener, Callback {
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 2;
     public static final int REQUEST_CODE_SAVE_PIC = 4;
@@ -65,7 +65,7 @@ public class CompleteProfile02Activity extends BaseActivity implements View.OnCl
     private ArrayList<UserImages> userImages;
     @SerializedName("profileImages")
     private ArrayList<UserImages> userImagesToSend;
-    private ProgressBar progressBar;
+    private ProgressBar progressBar, progressBar1, progressBar2, progressBar3, progressBar4, progressBar5;
     private Uri imageUri;
     private Bitmap imageBitmap;
     private String path;
@@ -99,6 +99,11 @@ public class CompleteProfile02Activity extends BaseActivity implements View.OnCl
         btnSave = (Button) findViewById(R.id.save);
         btnPrevious = (Button) findViewById(R.id.previous);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar1 = (ProgressBar) findViewById(R.id.progress_bar_1);
+        progressBar2 = (ProgressBar) findViewById(R.id.progress_bar_2);
+        progressBar3 = (ProgressBar) findViewById(R.id.progress_bar_3);
+        progressBar4 = (ProgressBar) findViewById(R.id.progress_bar_4);
+        progressBar5 = (ProgressBar) findViewById(R.id.progress_bar_5);
         userImages = new ArrayList<>();
         userImagesToSend = new ArrayList<>();
         setData();
@@ -117,40 +122,114 @@ public class CompleteProfile02Activity extends BaseActivity implements View.OnCl
             case 0:
                 break;
             case 1:
-                Picasso.with(this).load(userImages.get(0).getUrl()).fit().centerInside().into(ivPhoto1);
+                setFirstImage();
                 break;
             case 2:
-                Picasso.with(this).load(userImages.get(0).getUrl()).fit().centerInside().into(ivPhoto1);
-                Picasso.with(this).load(userImages.get(1).getUrl()).fit().centerCrop().into(ivPhoto2);
+                setFirstImage();
+                setSecondImage();
                 break;
             case 3:
-                Picasso.with(this).load(userImages.get(0).getUrl()).fit().centerInside().into(ivPhoto1);
-                Picasso.with(this).load(userImages.get(1).getUrl()).fit().centerCrop().into(ivPhoto2);
-                Picasso.with(this).load(userImages.get(2).getUrl()).fit().centerCrop().into(ivPhoto3);
-
+                setFirstImage();
+                setSecondImage();
+                setThirdImage();
                 break;
             case 4:
-                Picasso.with(this).load(userImages.get(0).getUrl()).fit().centerInside().into(ivPhoto1);
-                Picasso.with(this).load(userImages.get(1).getUrl()).fit().centerCrop().into(ivPhoto2);
-                Picasso.with(this).load(userImages.get(2).getUrl()).fit().centerCrop().into(ivPhoto3);
-                Picasso.with(this).load(userImages.get(3).getUrl()).fit().centerCrop().into(ivPhoto4);
+                setFirstImage();
+                setSecondImage();
+                setThirdImage();
+                setFourthImage();
                 break;
             case 5:
-                Picasso.with(this).load(userImages.get(0).getUrl()).fit().centerInside().into(ivPhoto1);
-                Picasso.with(this).load(userImages.get(1).getUrl()).fit().centerCrop().into(ivPhoto2);
-                Picasso.with(this).load(userImages.get(2).getUrl()).fit().centerCrop().into(ivPhoto3);
-                Picasso.with(this).load(userImages.get(3).getUrl()).fit().centerCrop().into(ivPhoto4);
-                Picasso.with(this).load(userImages.get(4).getUrl()).fit().centerCrop().into(ivPhoto5);
+                setFirstImage();
+                setSecondImage();
+                setThirdImage();
+                setFourthImage();
+                setFifthImage();
                 break;
             default:
-                Picasso.with(this).load(userImages.get(0).getUrl()).fit().centerInside().into(ivPhoto1);
-                Picasso.with(this).load(userImages.get(1).getUrl()).fit().centerCrop().into(ivPhoto2);
-                Picasso.with(this).load(userImages.get(2).getUrl()).fit().centerCrop().into(ivPhoto3);
-                Picasso.with(this).load(userImages.get(3).getUrl()).fit().centerCrop().into(ivPhoto4);
-                Picasso.with(this).load(userImages.get(4).getUrl()).fit().centerCrop().into(ivPhoto5);
+                setFirstImage();
+                setSecondImage();
+                setThirdImage();
+                setFourthImage();
+                setFifthImage();
                 break;
         }
 
+    }
+    private void setFirstImage()
+    {
+        progressBar1.setVisibility(View.VISIBLE);
+        Picasso.with(this).load(userImages.get(0).getUrl()).fit().centerCrop().into(ivPhoto1, new Callback() {
+            @Override
+            public void onSuccess() {
+                progressBar1.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
+    private void setSecondImage()
+    {
+        progressBar2.setVisibility(View.VISIBLE);
+        Picasso.with(this).load(userImages.get(1).getUrl()).fit().centerCrop().into(ivPhoto2, new Callback() {
+            @Override
+            public void onSuccess() {
+                progressBar2.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
+    private void setThirdImage()
+    {
+        progressBar3.setVisibility(View.VISIBLE);
+        Picasso.with(this).load(userImages.get(2).getUrl()).fit().centerCrop().into(ivPhoto3, new Callback() {
+            @Override
+            public void onSuccess() {
+                progressBar3.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
+    private void setFourthImage()
+    {
+        progressBar4.setVisibility(View.VISIBLE);
+        Picasso.with(this).load(userImages.get(3).getUrl()).fit().centerCrop().into(ivPhoto4, new Callback() {
+            @Override
+            public void onSuccess() {
+                progressBar4.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+    }
+    private void setFifthImage()
+    {
+        progressBar5.setVisibility(View.VISIBLE);
+        Picasso.with(this).load(userImages.get(4).getUrl()).fit().centerCrop().into(ivPhoto5, new Callback() {
+            @Override
+            public void onSuccess() {
+                progressBar5.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
     }
 
     @Override
@@ -163,17 +242,20 @@ public class CompleteProfile02Activity extends BaseActivity implements View.OnCl
     private String convertToByte(String path) {
         File imagefile = new File(path);
         FileInputStream fis = null;
+        byte[] bytes = new byte[1024];
         try {
             fis = new FileInputStream(imagefile);
-        } catch (FileNotFoundException e) {
+
+            Bitmap bm = BitmapFactory.decodeStream(fis);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            bytes = baos.toByteArray();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        Bitmap bm = BitmapFactory.decodeStream(fis);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 50, baos);
-        byte[] b = baos.toByteArray();
-        return Base64.encodeToString(b, Base64.DEFAULT);
+//        bm.recycle();
+        return Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
     @Override
@@ -447,5 +529,19 @@ public class CompleteProfile02Activity extends BaseActivity implements View.OnCl
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
+    }
+
+    @Override
+    public void onSuccess() {
+//        progressBar1.setVisibility(View.GONE);
+//        progressBar2.setVisibility(View.GONE);
+//        progressBar3.setVisibility(View.GONE);
+//        progressBar4.setVisibility(View.GONE);
+//        progressBar5.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onError() {
+
     }
 }

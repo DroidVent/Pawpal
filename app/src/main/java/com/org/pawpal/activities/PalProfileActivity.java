@@ -4,11 +4,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,8 +31,6 @@ import com.org.pawpal.model.UserImages;
 import com.org.pawpal.model.UserProfileData;
 import com.squareup.picasso.Picasso;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,19 +66,20 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         retrieveBundleData();
         init();
         //If this activity called for user's own profile
-        if (searchPal != null)
-        {
+        if (searchPal != null) {
+
             setData();
             setActivitiesAdapter();
             setImagesAdapter();
         }
-        else
-        {
+        //If this activity called for other user's profile
+        else {
             getOtherProfileData();
         }
 
 
     }
+
     private void getOtherProfileData() {
 
         progressBar.setVisibility(View.VISIBLE);
@@ -124,11 +121,12 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
                             setActivitiesAdapter();
                             setImagesAdapter();
                         } else
-                            showSnackBar(profile.getMessage(), (RelativeLayout)findViewById(R.id.parent_view));
+                            showSnackBar(profile.getMessage(), (RelativeLayout) findViewById(R.id.parent_view));
 
                     }
                 }));
     }
+
     private void setActivitiesAdapter() {
         recyclerViewActivities.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         activitiesAdapter = new HorizontalRVAdapter(searchPal.getPalActivities());
@@ -145,7 +143,7 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         String name = searchPal.getName();
         String description = searchPal.getDescription();
         if (!Utility.isEmptyString(createdAt)) {
-            if (Utility.isDateValid(createdAt,"yyyy-MM-dd hh:mm:ss"))
+            if (Utility.isDateValid(createdAt, "yyyy-MM-dd hh:mm:ss"))
                 tvMemberSince.setText(Utility.formatDate(createdAt));
             else
                 tvMemberSince.setText(createdAt);
@@ -154,11 +152,8 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         if (!Utility.isEmptyString(LoginAt))
             tvLoginAt.setText(Utility.formatDate(LoginAt));
         if (!Utility.isEmptyString(Location))
-        {
-            NumberFormat formatter = new DecimalFormat("#0.00");
-            formatter.format(Double.parseDouble(Location));
-            tvLocation.setText(formatter + " from you");
-        }
+
+            tvLocation.setText(Location + " from you");
 
         if (!Utility.isEmptyString(Period))
             tvPeriod.setText(Period);
@@ -218,8 +213,8 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
     }
 
     private void init() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(getString(R.string.findpal));
+
+        setToolBarTitle(getString(R.string.findpal));
         recyclerViewImages = (RecyclerView) findViewById(R.id.rv_images);
         recyclerViewActivities = (RecyclerView) findViewById(R.id.rv_activities);
         ivProfileImageView = (CircleImageView) findViewById(R.id.profile_image);
@@ -248,11 +243,17 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
             }
         });
     }
+    private void setToolBarTitle(String title){
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getString(R.string.findpal));
+    }
+
     void showDialog() {
         // Create the fragment and show it as a dialog.
         dialogFragment = SendMessageDialog.newInstance();
         dialogFragment.show(getSupportFragmentManager(), "dialog");
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

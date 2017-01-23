@@ -47,7 +47,7 @@
             android:id="@+id/tv_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Empty"
+            android:text=""
             android:textAllCaps="false"
             android:textSize="12sp" />
     </LinearLayout>
@@ -72,7 +72,7 @@
             android:id="@+id/tv_period"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Empty"
+            android:text=""
             android:textAllCaps="false"
             android:textSize="12sp" />
     </LinearLayout>
