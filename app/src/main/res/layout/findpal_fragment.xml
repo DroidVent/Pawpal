@@ -53,7 +53,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:layout_below="@+id/rl_subscribe"
-
+        android:clickable="true"
         android:background="@drawable/round_blue_button">
 
         <com.org.pawpal.custom.CustomTextView
@@ -74,6 +74,7 @@
         android:layout_below="@+id/rl_subscribe"
         android:layout_marginRight="5dp"
         android:layout_marginTop="10dp"
+        android:clickable="true"
         android:layout_toLeftOf="@+id/rl_clear_filters"
         android:background="@drawable/round_blue_button">
 

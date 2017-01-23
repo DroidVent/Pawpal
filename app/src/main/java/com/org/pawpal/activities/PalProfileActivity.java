@@ -61,10 +61,15 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pal_profile);
         retrieveBundleData();
-        init();
-        setData();
-        setActivitiesAdapter();
-        setImagesAdapter();
+        if (searchPal != null)
+        {
+            init();
+            setData();
+            setActivitiesAdapter();
+            setImagesAdapter();
+        }
+
+
     }
 
     private void setActivitiesAdapter() {

@@ -31,5 +31,10 @@ public class PrefManager {
         SharedPreferences settings = context.getSharedPreferences(Constants.PREF_NAME, 0);
         return settings.getString(key.toString(), "null");
     }
+    public static void removeKeyPreference(Context  context, PersistenceKey key)
+    {
+        SharedPreferences settings = context.getSharedPreferences(key.toString(), 0);
+        settings.edit().clear().commit();
+    }
 
 }

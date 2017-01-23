@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -19,7 +20,7 @@ import com.org.pawpal.Utils.Constants;
 import com.org.pawpal.Utils.PrefManager;
 import com.org.pawpal.activities.BaseActivity;
 import com.org.pawpal.activities.DashboardActivity;
-import com.org.pawpal.activities.FilterActivties;
+import com.org.pawpal.activities.FilterActivity;
 import com.org.pawpal.activities.PalProfileActivity;
 import com.org.pawpal.adapter.FindPalAdapter;
 import com.org.pawpal.custom.CustomTextView;
@@ -57,6 +58,7 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private int countItems;
     private TextView tvNoResult;
+    private RelativeLayout rlClearFilter;
 
     @Nullable
     @Override
@@ -89,6 +91,8 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
         palsList = new ArrayList<>();
         linearLayoutManager = new LinearLayoutManager(getContext());
         progressBar = (ProgressBar)view.findViewById(R.id.progress_bar);
+        rlClearFilter = (RelativeLayout)view.findViewById(R.id.rl_clear_filters);
+        rlClearFilter.setOnClickListener(this);
         setAdapter();
     }
 
@@ -100,7 +104,7 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
+      /*          if (dy > 0) {
                     visibleItemCount = linearLayoutManager.getChildCount();
                     totalItemCount = linearLayoutManager.getItemCount();
                     pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition();
@@ -113,7 +117,7 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
                             }
                         }
                     }
-                }
+                }*/
             }
         });
     }
@@ -122,9 +126,16 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_filter_by:
-                Intent intent = new Intent(getContext(), FilterActivties.class);
+                Intent intent = new Intent(getContext(), FilterActivity.class);
                 startActivityForResult(intent, Constants.FILTER_REQUEST);
                 getActivity().overridePendingTransition(R.anim.bottom_up, R.anim.bottom_down);
+                break;
+            case R.id.rl_clear_filters:
+                PrefManager.removeKeyPreference(getContext(), PrefManager.PersistenceKey.SEARCH_PAL_FILTERS);
+                filterPal = null;
+                filterPal = new FilterPal();
+                filterPal.setProfile_id(PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID));
+                searchPal(filterPal,1, PAGE_LIMIT);
                 break;
         }
     }
@@ -145,8 +156,8 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
         progressBar.setVisibility(View.VISIBLE);
         if (baseActivity.isNetworkAvailable()) {
             filterPal.setProfile_id(PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID));
-            if (palsList.size() != 0)
-                filterPal.setLast_profile_id(palsList.get(palsList.size()-1).getId());
+            /*if (palsList.size() != 0)
+                filterPal.setLast_profile_id(palsList.get(palsList.size()-1).getId());*/
             filterPal.setPage(PAGE_LIMIT);
             compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().searchPal(filterPal).subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<SearchPalResponse>() {

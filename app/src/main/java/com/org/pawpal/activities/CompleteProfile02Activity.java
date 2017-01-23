@@ -171,7 +171,7 @@ public class CompleteProfile02Activity extends BaseActivity implements View.OnCl
 
         Bitmap bm = BitmapFactory.decodeStream(fis);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 90, baos);
+        bm.compress(Bitmap.CompressFormat.JPEG, 50, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
@@ -246,7 +246,8 @@ public class CompleteProfile02Activity extends BaseActivity implements View.OnCl
                         public void onNext(UpdateProfile updateProfile) {
                             progressBar.setVisibility(View.GONE);
                             if (Integer.valueOf(updateProfile.getCode()) == Constants.SUCCESS_CODE) {
-                                PrefManager.store(CompleteProfile02Activity.this, PrefManager.PersistenceKey.PROFILE_IMAGE, updateProfile.getUserData().getImages().get(0).getUrl());
+                                if (updateProfile.getUserData().getImages() != null && updateProfile.getUserData().getImages().size() != 0)
+                                    PrefManager.store(CompleteProfile02Activity.this, PrefManager.PersistenceKey.PROFILE_IMAGE, updateProfile.getUserData().getImages().get(0).getUrl());
                                 Toast.makeText(CompleteProfile02Activity.this, "Profile has been updated", Toast.LENGTH_LONG).show();
                             } else {
 

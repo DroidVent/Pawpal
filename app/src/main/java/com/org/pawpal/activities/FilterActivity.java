@@ -44,7 +44,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by hp-pc on 26-12-2016.
  */
 
-public class FilterActivties extends BaseActivity implements OnItemCheckBoxListener, View.OnClickListener {
+public class FilterActivity extends BaseActivity implements OnItemCheckBoxListener, View.OnClickListener {
     private RecyclerView gridView;
     private static final int UPDATE_LOC = 1;
     private static final int SAVE_FILTERS = 2;
@@ -69,7 +69,7 @@ public class FilterActivties extends BaseActivity implements OnItemCheckBoxListe
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_filter);
+        setContentView(R.layout.activity_filter);
         init();
         getPalActivities();
         setPeriodSpinner();
@@ -297,7 +297,7 @@ public class FilterActivties extends BaseActivity implements OnItemCheckBoxListe
             {
                 Gson gson = new Gson();
                 String filters = gson.toJson((FilterPal)msg.obj);
-                PrefManager.store(FilterActivties.this, PrefManager.PersistenceKey.SEARCH_PAL_FILTERS, filters);
+                PrefManager.store(FilterActivity.this, PrefManager.PersistenceKey.SEARCH_PAL_FILTERS, filters);
             }
             super.handleMessage(msg);
         }
