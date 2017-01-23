@@ -41,6 +41,9 @@ public interface PawPalAPI {
     @GET("profile/get_user_profile.json")
     Observable<Profile> getProfile(@Query("profile_id") String profile_id);
 
+    @GET("profile/get_user_profile.json")
+    Observable<Profile> getOtherProfile(@Query("profile_id") String profile_id, @Query("other_user_profile_id") String other_user_profile_id);
+
     @GET("profile/get_activities.json")
     Observable<PalActivitiyResponse> getActivities();
 

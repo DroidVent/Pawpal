@@ -17,6 +17,9 @@ public class UserProfileData {
     private String description;
     private List<PalActivity> activities;
     private List<UserImages> images;
+    private String distance;
+    private String profile_created_at;
+    private String last_login;
 
     public String getProfile_id() {
         return profile_id;
@@ -104,5 +107,29 @@ public class UserProfileData {
 
     public void setImages(List<UserImages> images) {
         this.images = images;
+    }
+
+    public String getLast_login() {
+        return last_login;
+    }
+
+    public void setLast_login(String last_login) {
+        this.last_login = last_login;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
+    public String getProfile_created_at() {
+        return profile_created_at;
+    }
+
+    public void setProfile_created_at(String profile_created_at) {
+        this.profile_created_at = profile_created_at;
     }
 }

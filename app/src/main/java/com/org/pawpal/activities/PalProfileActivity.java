@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,9 +26,11 @@ import com.org.pawpal.interfaces.OnItemCheckBoxListener;
 import com.org.pawpal.interfaces.OnSendMessageListener;
 import com.org.pawpal.model.AddFavoriteResponse;
 import com.org.pawpal.model.PostMessage;
+import com.org.pawpal.model.Profile;
 import com.org.pawpal.model.SearchPal;
 import com.org.pawpal.model.SendMessageResponse;
 import com.org.pawpal.model.UserImages;
+import com.org.pawpal.model.UserProfileData;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -61,17 +65,65 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pal_profile);
         retrieveBundleData();
+        init();
+        //If this activity called for user's own profile
         if (searchPal != null)
         {
-            init();
             setData();
             setActivitiesAdapter();
             setImagesAdapter();
         }
+        else
+        {
+
+        }
 
 
     }
+    private void getOtherProfileData() {
 
+        progressBar.setVisibility(View.VISIBLE);
+
+        String profileID = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID);
+        compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getOtherProfile(profileID, )
+                .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Profile>() {
+                    @Override
+                    public void onCompleted() {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        progressBar.setVisibility(View.GONE);
+                        e.printStackTrace();
+                        showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
+                    }
+
+                    @Override
+                    public void onNext(Profile profile) {
+
+                        progressBar.setVisibility(View.GONE);
+                        if (Integer.valueOf(profile.getCode()) == Constants.SUCCESS_CODE) {
+                            UserProfileData otherUserProfileData = profile.getUserData();
+                            searchPal.setPalActivities(otherUserProfileData.getActivities());
+                            searchPal.setId(otherUserProfileData.getProfile_id());
+                            searchPal.setLast_login(otherUserProfileData.getLast_login());
+                            searchPal.setDistance(otherUserProfileData.getDistance());
+                            searchPal.setName(otherUserProfileData.getName());
+                            searchPal.setPeriod(otherUserProfileData.getPeriod());
+                            searchPal.setPet_size(otherUserProfileData.getPet_size());
+                            searchPal.setProfile_created_at(otherUserProfileData.getProfile_created_at());
+                            searchPal.setUserImages(otherUserProfileData.getImages());
+
+                            setData();
+                            setActivitiesAdapter();
+                            setImagesAdapter();
+                        } else
+                            showSnackBar(profile.getMessage(), (RelativeLayout)findViewById(R.id.parent_view));
+
+                    }
+                }));
+    }
     private void setActivitiesAdapter() {
         recyclerViewActivities.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         activitiesAdapter = new HorizontalRVAdapter(searchPal.getPalActivities());

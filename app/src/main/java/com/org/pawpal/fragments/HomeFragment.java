@@ -1,5 +1,6 @@
 package com.org.pawpal.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,7 +16,9 @@ import com.org.pawpal.R;
 import com.org.pawpal.Utils.Constants;
 import com.org.pawpal.Utils.PrefManager;
 import com.org.pawpal.activities.DashboardActivity;
+import com.org.pawpal.activities.PalProfileActivity;
 import com.org.pawpal.adapter.FavoritesAdapter;
+import com.org.pawpal.interfaces.OnItemClickListener;
 import com.org.pawpal.model.Favorite;
 import com.org.pawpal.model.FavoriteResponse;
 
@@ -31,7 +34,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by hp-pc on 06-12-2016.
  */
 
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class HomeFragment extends Fragment implements View.OnClickListener, OnItemClickListener {
     private View view;
     private DashboardActivity dashboardActivity;
     private RecyclerView rvFavorite;
@@ -51,7 +54,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setFavAdapter() {
-        favoritesAdapter = new FavoritesAdapter(favorites, getContext());
+        favoritesAdapter = new FavoritesAdapter(favorites, getContext(), this);
         rvFavorite.setLayoutManager(linearLayoutManagerFav);
         rvFavorite.setAdapter(favoritesAdapter);
     }
@@ -114,5 +117,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             dashboardActivity.showSnack(favoriteResponse.getMessage());
                     }
                 }));
+    }
+
+    @Override
+    public void onClicked(int position) {
+        Intent intent = new Intent(getContext(), PalProfileActivity.class);
+        startActivity(intent);
     }
 }
