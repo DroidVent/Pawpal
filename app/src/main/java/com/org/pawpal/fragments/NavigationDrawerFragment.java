@@ -75,7 +75,9 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
         expandableListDetail = ExpandableListDataPump.getData();
         expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
 
+        View header= inflater.inflate(R.layout.nav_header_main, null);
 
+        mDrawerListView.addHeaderView(header);
         mDrawerListView.setAdapter(new ExpandableListAdapter(getActivity(), expandableListTitle, expandableListDetail));
 
         mDrawerListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
@@ -146,8 +148,7 @@ public class NavigationDrawerFragment extends android.support.v4.app.Fragment {
 
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
-        View header= inflater.inflate(R.layout.nav_header_main, null);
-        mDrawerListView.addHeaderView(header);
+
 
 
         return mDrawerListView;

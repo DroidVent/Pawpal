@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.org.pawpal.MyApplication;
 import com.org.pawpal.R;
@@ -22,6 +23,8 @@ import com.org.pawpal.activities.ConversationActivity;
 import com.org.pawpal.activities.DashboardActivity;
 import com.org.pawpal.adapter.InboxAdapter;
 import com.org.pawpal.interfaces.OnInboxListener;
+import com.org.pawpal.model.ArchieveMessageResponse;
+import com.org.pawpal.model.FavoriteMessageResponse;
 import com.org.pawpal.model.GetInboxMessageResponse;
 import com.org.pawpal.model.Message;
 
@@ -48,6 +51,7 @@ public class InboxFragment extends Fragment implements OnInboxListener, SwipeRef
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView tvNoResult, tvCount;
     private int size;
+    private String profileId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,10 +65,10 @@ public class InboxFragment extends Fragment implements OnInboxListener, SwipeRef
         dashboardActivity = (DashboardActivity) getActivity();
         compositeSubscription = new CompositeSubscription();
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-        swipeRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         inboxMessages = new ArrayList<>();
-        tvNoResult = (TextView)view.findViewById(R.id.tv_no_result);
-        tvCount = (TextView)view.findViewById(R.id.tv_count_msg);
+        tvNoResult = (TextView) view.findViewById(R.id.tv_no_result);
+        tvCount = (TextView) view.findViewById(R.id.tv_count_msg);
         recyclerViewInbox = (RecyclerView) view.findViewById(R.id.rv_inbox);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewInbox.setLayoutManager(linearLayoutManager);
@@ -77,7 +81,7 @@ public class InboxFragment extends Fragment implements OnInboxListener, SwipeRef
         recyclerViewInbox.setVisibility(View.GONE);
         if (!swipeRefreshLayout.isRefreshing())
             showHideProgressBar(View.VISIBLE);
-        String profileId = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID);
+        profileId = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID);
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getInboxMessages(profileId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -103,16 +107,13 @@ public class InboxFragment extends Fragment implements OnInboxListener, SwipeRef
                         if (Integer.valueOf(getInboxMessageResponse.getCode()) == Constants.SUCCESS_CODE) {
                             ArrayList<Message> messages = getInboxMessageResponse.getInboxResponse().getMessages();
                             size = messages.size();
-                            if (messages != null && size != 0)
-                            {
-                                tvCount.setText("You have "+ size +" conversation(s)");
+                            if (messages != null && size != 0) {
+                                tvCount.setText("You have " + size + " conversation(s)");
                                 inboxMessages.clear();
                                 inboxMessages.addAll(messages);
                                 tvNoResult.setVisibility(View.GONE);
                                 inboxAdapter.notifyDataSetChanged();
-                            }
-                            else
-                            {
+                            } else {
                                 tvCount.setVisibility(View.GONE);
                                 tvNoResult.setVisibility(View.VISIBLE);
                             }
@@ -123,17 +124,86 @@ public class InboxFragment extends Fragment implements OnInboxListener, SwipeRef
                     }
                 }));
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         compositeSubscription.unsubscribe();
     }
+
     @Override
-    public void onStarClicked(int position) {
+    public void onStarClicked(final int position) {
+        progressBar.setVisibility(View.VISIBLE);
+        String threadId = inboxMessages.get(position).getThread_id();
+        int favoriteStatus = inboxMessages.get(position).getIsFav();
+        if (favoriteStatus == 0)
+            favoriteStatus = 1;
+        else
+            favoriteStatus = 0;
+        final int finalFavoriteStatus = favoriteStatus;
+        compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().postFavoriteMessage(profileId, threadId, favoriteStatus)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<FavoriteMessageResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onNext(FavoriteMessageResponse favoriteMessageResponse) {
+                        progressBar.setVisibility(View.GONE);
+                        if (Integer.valueOf(favoriteMessageResponse.getCode()) == Constants.SUCCESS_CODE) {
+                            Toast.makeText(getContext(), favoriteMessageResponse.getMessage(), Toast.LENGTH_LONG).show();
+                            inboxMessages.get(position).setIsFav(finalFavoriteStatus);
+                            inboxAdapter.notifyDataSetChanged();
+                        }
+                        else
+                            dashboardActivity.showSnackBar(favoriteMessageResponse.getMessage(), (LinearLayout) view.findViewById(R.id.parent_view));
+
+                    }
+                }));
     }
 
     @Override
-    public void onArchieveClicked(int position) {
+    public void onArchieveClicked(final int position) {
+        progressBar.setVisibility(View.VISIBLE);
+        String threadId = inboxMessages.get(position).getThread_id();
+        int isArchive = inboxMessages.get(position).getIs_archive();
+        compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().postArchieveMessage(profileId, threadId, isArchive)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ArchieveMessageResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onNext(ArchieveMessageResponse archieveMessageResponse) {
+                        progressBar.setVisibility(View.GONE);
+                        if (Integer.valueOf(archieveMessageResponse.getCode()) == Constants.SUCCESS_CODE) {
+                            Toast.makeText(getContext(), archieveMessageResponse.getMessage(), Toast.LENGTH_LONG).show();
+                            inboxMessages.remove(position);
+                            inboxAdapter.notifyDataSetChanged();
+                            tvCount.setText("You have " + inboxMessages.size() + " conversation(s)");                        }
+                        else
+                            dashboardActivity.showSnackBar(archieveMessageResponse.getMessage(), (LinearLayout) view.findViewById(R.id.parent_view));
+
+                    }
+                }));
     }
 
     @Override

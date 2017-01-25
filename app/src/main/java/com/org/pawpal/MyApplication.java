@@ -1,6 +1,6 @@
 package com.org.pawpal;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.org.pawpal.Utils.Constants;
 import com.org.pawpal.server.ApiInterceptor;
@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by hp-pc on 24-11-2016.
  */
 
-public class MyApplication extends Application {
+public class MyApplication extends MultiDexApplication {
     private static MyApplication sInstance;
     private static Retrofit retrofit;
     private static PawPalAPI pawPalAPI;

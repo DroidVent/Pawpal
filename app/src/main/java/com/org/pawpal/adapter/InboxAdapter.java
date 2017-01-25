@@ -45,6 +45,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.MyViewHolder
     public void onBindViewHolder(InboxAdapter.MyViewHolder holder, final int position) {
         Message message = messages.get(position);
         Integer isStar = message.getIsFav();
+        int isArchieve = message.getIs_archive();
         if (isStar == null || isStar == 0)
         {
             holder.ivStar.setVisibility(View.GONE);
@@ -57,7 +58,12 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.MyViewHolder
             holder.tvStarUnStar.setText("Unstar");
             holder.ivStarUnstar.setImageResource(R.mipmap.unstar);
         }
-
+        if (isArchieve == 1)
+        {
+            holder.tvArchieve.setText("Archieve");
+        }
+        else
+            holder.tvArchieve.setText("Unarchieve");
         holder.tvMessage.setText(message.getMessage_text());
         holder.tvDate.setText(message.getCreated_date());
         holder.tvUsername.setText(message.getName());
@@ -104,7 +110,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.MyViewHolder
         private TextView tvDate, tvMessage;
         private CircleImageView ivProfile;
         public TextView tvUsername;
-        public TextView tvStarUnStar;
+        public TextView tvStarUnStar,tvArchieve;
         public MyViewHolder(View itemView) {
             super(itemView);
             item = itemView;
@@ -116,6 +122,7 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.MyViewHolder
             tvUsername = (TextView)item.findViewById(R.id.tv_username);
             ivProfile = (CircleImageView)item.findViewById(R.id.profile_image);
             tvStarUnStar = (CustomTextView)item.findViewById(R.id.tv_star_unstar);
+            tvArchieve = (CustomTextView)item.findViewById(R.id.tv_archieve);
             ivStarUnstar = (ImageView)item.findViewById(R.id.iv_star_unstar);
         }
     }

@@ -41,7 +41,6 @@ public class ActivitiesAdapter extends RecyclerView.Adapter<ActivitiesAdapter.My
         holder.checkBox.setText(pawActivity.getName());
         if (pawActivity.isChecked())
             holder.checkBox.setChecked(true);
-        final int[] i = {1};
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

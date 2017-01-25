@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
@@ -47,6 +46,7 @@ dependencies {
 allprojects {
     repositories {
         maven { url "https://jitpack.io" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
 }
 apply plugin: 'com.google.gms.google-services'

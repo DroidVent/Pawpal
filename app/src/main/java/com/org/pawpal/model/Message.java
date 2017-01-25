@@ -11,6 +11,7 @@ public class Message {
     private String created_date;
     private String name;
     private int isFav;
+    private int is_archive;
     private int profile_id;
     private int other_user_profile_id;
     private ArrayList<UserImages> images;
@@ -77,5 +78,13 @@ public class Message {
 
     public void setOther_user_profile_id(int other_user_profile) {
         this.other_user_profile_id = other_user_profile;
+    }
+
+    public int getIs_archive() {
+        return is_archive;
+    }
+
+    public void setIs_archive(int is_archive) {
+        this.is_archive = is_archive;
     }
 }

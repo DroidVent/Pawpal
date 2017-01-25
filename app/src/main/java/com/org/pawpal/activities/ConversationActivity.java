@@ -1,7 +1,9 @@
 package com.org.pawpal.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -38,7 +40,7 @@ import static com.org.pawpal.R.string.conversations;
  * Created by hp-pc on 14-01-2017.
  */
 
-public class ConversationActivity extends BaseActivity {
+public class ConversationActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener  {
     private RecyclerView recyclerViewConversation;
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<ThreadMessage> threadMessages;
@@ -47,9 +49,10 @@ public class ConversationActivity extends BaseActivity {
     private String threadId, otherUserProfileId;
     private ProgressBar progressBar;
     private CircleImageView ivProfileImage;
-    private TextView tvCOnversationUser,tvConversationWith, tvMemberSince, tvDistance;
+    private TextView tvCOnversationUser,tvConversationWith, tvMemberSince, tvDistance, tvViewProfile;
     private RelativeLayout sendMessage;
     private EditText etMsg;
+    private SwipeRefreshLayout swipeRefreshLayout;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +80,8 @@ public class ConversationActivity extends BaseActivity {
         ivProfileImage = (CircleImageView) findViewById(R.id.profile_image);
         tvMemberSince = (TextView)findViewById(R.id.tv_member_txt);
         tvDistance = (TextView)findViewById(R.id.tv_location);
+        tvViewProfile = (TextView)findViewById(R.id.tv_view_profile);
+        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh);
         tvConversationWith = (TextView)findViewById(R.id.tv_conversation_with_user);
         progressBar = (ProgressBar)findViewById(R.id.progress_bar);
         recyclerViewConversation = (RecyclerView) findViewById(R.id.rv_messages);
@@ -87,6 +92,16 @@ public class ConversationActivity extends BaseActivity {
             public void onClick(View view) {
                 if (!etMsg.getText().toString().isEmpty())
                     sendReply(etMsg.getText().toString());
+            }
+        });
+        swipeRefreshLayout.setOnRefreshListener(this);
+        tvViewProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(ConversationActivity.this, PalProfileActivity.class);
+                intent.putExtra("other_user_profile", otherUserProfileId);
+                startActivity(intent);
             }
         });
 
@@ -150,8 +165,9 @@ public class ConversationActivity extends BaseActivity {
     }
 
     private void getMessages() {
-        showHideProgressBar(View.VISIBLE);
-        recyclerViewConversation.setVisibility(View.GONE);
+        if (!swipeRefreshLayout.isRefreshing())
+            showHideProgressBar(View.VISIBLE);
+//        recyclerViewConversation.setVisibility(View.GONE);
         String profileId = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID);
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getThreadMessages(profileId, threadId)
                 .subscribeOn(Schedulers.newThread())
@@ -165,6 +181,7 @@ public class ConversationActivity extends BaseActivity {
                     @Override
                     public void onError(Throwable e) {
                         showHideProgressBar(View.GONE);
+                        swipeRefreshLayout.setRefreshing(false);
                         showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
                         e.printStackTrace();
                     }
@@ -172,6 +189,9 @@ public class ConversationActivity extends BaseActivity {
                     @Override
                     public void onNext(GetThreadMessageResponse response) {
                         showHideProgressBar(View.GONE);
+                        swipeRefreshLayout.setRefreshing(false);
+                        tvViewProfile.setEnabled(true);
+                        tvViewProfile.setClickable(true);
                         recyclerViewConversation.setVisibility(View.VISIBLE);
                         if (Integer.valueOf(response.getCode()) == Constants.SUCCESS_CODE) {
                             ArrayList<ThreadMessage> messages = response.getResponse().getMessages();
@@ -211,4 +231,8 @@ public class ConversationActivity extends BaseActivity {
         progressBar.setVisibility(visibility);
     }
 
+    @Override
+    public void onRefresh() {
+        getMessages();
+    }
 }

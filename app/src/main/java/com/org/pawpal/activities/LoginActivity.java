@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -32,6 +33,7 @@ public class LoginActivity extends BaseActivity {
     private String password;
     private String email;
     private ProgressBar progressBar;
+    private CheckBox cbRememberMe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,7 @@ public class LoginActivity extends BaseActivity {
         btnLogin = (Button) findViewById(R.id.btn_login);
         etEmail = (EditText) findViewById(R.id.et_email);
         etPassword = (EditText) findViewById(R.id.et_password);
+        cbRememberMe = (CheckBox) findViewById(R.id.cb_remember);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,6 +105,7 @@ public class LoginActivity extends BaseActivity {
                     if (response.code() == Constants.SUCCESS_CODE) {
 
                         showSnackBar("Success", (RelativeLayout) findViewById(R.id.parent_view));
+
                         saveCreadentials(response.body());
                         launchDashboard();
 
@@ -130,12 +134,14 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void saveCreadentials(User user) {
-        UserData data  = user.getUserData();
+        UserData data = user.getUserData();
         PrefManager.store(this, PrefManager.PersistenceKey.USER_ID, data.getUser_id());
         PrefManager.store(this, PrefManager.PersistenceKey.PROFILE_ID, data.getProfile_id());
         PrefManager.store(this, PrefManager.PersistenceKey.USER_NAME, data.getName());
-        if (data.getImages() != null && data.getImages().size() !=0 )
+        if (data.getImages() != null && data.getImages().size() != 0)
             PrefManager.store(this, PrefManager.PersistenceKey.PROFILE_IMAGE, data.getImages().get(0).getUrl());
+        if (cbRememberMe.isChecked())
+            PrefManager.store(this, PrefManager.PersistenceKey.REMEMBER_ME, "true");
     }
 
     public boolean isEmailValid(String email) {

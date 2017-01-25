@@ -24,8 +24,8 @@ public class LandingActivity extends BaseActivity {
         checkIfLoggedIn();
     }
     private void checkIfLoggedIn() {
-        String userId = PrefManager.retrieve(this, PrefManager.PersistenceKey.USER_ID);
-        if (!userId.equals("null") && !userId.equals(""))
+        String isRememberChecked = PrefManager.retrieve(this, PrefManager.PersistenceKey.REMEMBER_ME);
+        if (!isRememberChecked.equals("null") && !isRememberChecked.equals(""))
         {
             Intent intent = new Intent(this, DashboardActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

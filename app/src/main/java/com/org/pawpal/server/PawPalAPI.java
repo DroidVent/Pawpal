@@ -1,6 +1,8 @@
 package com.org.pawpal.server;
 
 import com.org.pawpal.model.AddFavoriteResponse;
+import com.org.pawpal.model.ArchieveMessageResponse;
+import com.org.pawpal.model.FavoriteMessageResponse;
 import com.org.pawpal.model.FavoriteResponse;
 import com.org.pawpal.model.FilterPal;
 import com.org.pawpal.model.GetInboxMessageResponse;
@@ -73,4 +75,13 @@ public interface PawPalAPI {
 
     @GET("message/get_thread_detail.json")
     Observable<GetThreadMessageResponse> getThreadMessages(@Query("profile_id") String profile_id,@Query("thread_id") String thread_id);
+
+    @FormUrlEncoded
+    @POST("message/archive_message.json")
+    Observable<ArchieveMessageResponse> postArchieveMessage(@Field("profile_id") String profile_id, @Field("thread_id") String thread_id, @Field("is_archive") int is_archive);
+
+    @FormUrlEncoded
+    @POST("message/star_message.json")
+    Observable<FavoriteMessageResponse> postFavoriteMessage(@Field("profile_id") String profile_id, @Field("thread_id") String thread_id, @Field("isFav") int is_fav);
+
 }
