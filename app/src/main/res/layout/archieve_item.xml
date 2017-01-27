@@ -63,12 +63,12 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="20dp"
                 android:paddingTop="10dp"
-                android:text="This is a test conversation" />
+                android:text="This is a test conversation " />
         </LinearLayout>
 
 
         <RelativeLayout
-            android:id="@+id/rl_archieve"
+            android:id="@+id/rl_unarchieve"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:background="@drawable/round_blue_button"
@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/iv_archieve"
                 android:gravity="center"
-                android:text="Unarchieve"
+                android:text="Unarchive"
                 android:textAllCaps="false"
                 android:textColor="@color/white" />
         </RelativeLayout>

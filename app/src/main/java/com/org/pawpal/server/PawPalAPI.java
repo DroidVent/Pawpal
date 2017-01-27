@@ -1,11 +1,12 @@
 package com.org.pawpal.server;
 
 import com.org.pawpal.model.AddFavoriteResponse;
-import com.org.pawpal.model.ArchieveMessageResponse;
 import com.org.pawpal.model.FavoriteMessageResponse;
 import com.org.pawpal.model.FavoriteResponse;
 import com.org.pawpal.model.FilterPal;
+import com.org.pawpal.model.GetArchieveMessageResponse;
 import com.org.pawpal.model.GetInboxMessageResponse;
+import com.org.pawpal.model.GetLatestConversationResponse;
 import com.org.pawpal.model.GetSentMessageResponse;
 import com.org.pawpal.model.GetThreadMessageResponse;
 import com.org.pawpal.model.Login;
@@ -78,10 +79,16 @@ public interface PawPalAPI {
 
     @FormUrlEncoded
     @POST("message/archive_message.json")
-    Observable<ArchieveMessageResponse> postArchieveMessage(@Field("profile_id") String profile_id, @Field("thread_id") String thread_id, @Field("is_archive") int is_archive);
+    Observable<GetArchieveMessageResponse> postArchieveMessage(@Field("profile_id") String profile_id, @Field("thread_id") String thread_id, @Field("is_archive") int is_archive);
 
     @FormUrlEncoded
     @POST("message/star_message.json")
     Observable<FavoriteMessageResponse> postFavoriteMessage(@Field("profile_id") String profile_id, @Field("thread_id") String thread_id, @Field("isFav") int is_fav);
+
+    @GET("message/get_user_archive_messages.json")
+    Observable<GetArchieveMessageResponse> getArchieveMessages(@Query("profile_id") String profile_id);
+
+    @GET("message/get_user_latest_conversation.json")
+    Observable<GetLatestConversationResponse> getLatestConversation(@Query("profile_id") String profile_id);
 
 }

@@ -133,26 +133,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         else if (listPosition == 4)
             ivMenu.setImageResource(R.mipmap.signout);
 
-     /*   listTitleTextIconView.setTypeface(null, Typeface.NORMAL);
-        if (listPosition == ITEM1)
-            listTitleTextIconView.setText("glass");
-        else if (listPosition == ITEM2)
-            listTitleTextIconView.setText("music");
-        else if (listPosition == ITEM3)
-            listTitleTextIconView.setText("search");
-        else if (listPosition == ITEM4)
-            listTitleTextIconView.setText("envelope");*/
-
-        // set arrow icons for relevant items
-       /* if (listPosition == ITEM1 || listPosition == ITEM2) {
-            if (!isExpanded)
-                listTitleTextArrowView.setText("fa_chevron_right");
-            else
-                listTitleTextArrowView.setText("fa_chevron_down");
-        } else {
-            listTitleTextArrowView.setText("");
-
-        }*/
         return convertView;
     }
 

@@ -20,29 +20,29 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
- * Created by hp-pc on 14-01-2017.
+ * Created by hp-pc on 27-01-2017.
  */
 
-public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.MyViewHolder>  {
+public class LatestConversationAdapter extends RecyclerView.Adapter<LatestConversationAdapter.MyViewHolder>  {
     private ArrayList<Message> messages;
     private OnMessagesListener onMessagesListener;
     private Context context;
-    public InboxAdapter(Context context, ArrayList<Message> conversations, OnMessagesListener onMessagesListener) {
+    public LatestConversationAdapter(Context context, ArrayList<Message> conversations, OnMessagesListener onMessagesListener) {
         this.messages = conversations;
         this.onMessagesListener = onMessagesListener;
         this.context = context;
     }
 
     @Override
-    public InboxAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public LatestConversationAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.inbox_item, parent, false);
 
-        return new InboxAdapter.MyViewHolder(itemView);
+        return new LatestConversationAdapter.MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(InboxAdapter.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(LatestConversationAdapter.MyViewHolder holder, final int position) {
         Message message = messages.get(position);
         Integer isStar = message.getIsFav();
         int isArchieve = message.getIs_archive();
@@ -127,3 +127,4 @@ public class InboxAdapter extends RecyclerView.Adapter<InboxAdapter.MyViewHolder
         }
     }
 }
+

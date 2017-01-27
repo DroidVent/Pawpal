@@ -20,12 +20,12 @@ import com.org.pawpal.activities.ConversationActivity;
 import com.org.pawpal.activities.DashboardActivity;
 import com.org.pawpal.activities.PalProfileActivity;
 import com.org.pawpal.adapter.FavoritesAdapter;
-import com.org.pawpal.adapter.InboxAdapter;
-import com.org.pawpal.interfaces.OnInboxListener;
+import com.org.pawpal.adapter.LatestConversationAdapter;
 import com.org.pawpal.interfaces.OnItemClickListener;
+import com.org.pawpal.interfaces.OnMessagesListener;
 import com.org.pawpal.model.Favorite;
 import com.org.pawpal.model.FavoriteResponse;
-import com.org.pawpal.model.GetInboxMessageResponse;
+import com.org.pawpal.model.GetLatestConversationResponse;
 import com.org.pawpal.model.Message;
 
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by hp-pc on 06-12-2016.
  */
 
-public class HomeFragment extends Fragment implements View.OnClickListener, OnItemClickListener, OnInboxListener {
+public class HomeFragment extends Fragment implements View.OnClickListener, OnItemClickListener, OnMessagesListener {
     private View view;
     private DashboardActivity dashboardActivity;
     private RecyclerView rvFavorite, rvConversations;
@@ -48,7 +48,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnIt
     private ArrayList<Message> messages;
     private LinearLayoutManager linearLayoutManagerFav;
     private LinearLayoutManager linearLayoutManagerInbox;
-    private InboxAdapter inboxAdapter;
+    private LatestConversationAdapter latestConversationAdapter;
     private FavoritesAdapter favoritesAdapter;
     private CompositeSubscription compositeSubscription;
     private ProgressBar progressBar;
@@ -58,7 +58,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnIt
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.home_fragment, container, false);
         init();
-        getInboxMessages();
         setFavAdapter();
         setInboxAdapter();
         return view;
@@ -71,9 +70,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnIt
     }
 
     private void setInboxAdapter() {
-        inboxAdapter = new InboxAdapter(getContext(), messages, this);
+        latestConversationAdapter = new LatestConversationAdapter(getContext(), messages, this);
         rvConversations.setLayoutManager(linearLayoutManagerInbox);
-        rvConversations.setAdapter(inboxAdapter);
+        rvConversations.setAdapter(latestConversationAdapter);
     }
 
     private void init() {
@@ -99,16 +98,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnIt
     public void onResume() {
         super.onResume();
         getFavorites();
+        getLatestMessages();
     }
 
-    private void getInboxMessages() {
+    private void getLatestMessages() {
         rvConversations.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         String profileId = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID);
-        compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getInboxMessages(profileId)
+        compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getLatestConversation(profileId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<GetInboxMessageResponse>() {
+                .subscribe(new Observer<GetLatestConversationResponse>() {
                     @Override
                     public void onCompleted() {
                         progressBar.setVisibility(View.GONE);
@@ -122,16 +122,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnIt
                     }
 
                     @Override
-                    public void onNext(GetInboxMessageResponse getInboxMessageResponse) {
+                    public void onNext(GetLatestConversationResponse response) {
                         progressBar.setVisibility(View.GONE);
                         rvConversations.setVisibility(View.VISIBLE);
-                        if (Integer.valueOf(getInboxMessageResponse.getCode()) == Constants.SUCCESS_CODE) {
-                            ArrayList<Message> messagesList = getInboxMessageResponse.getInboxResponse().getMessages();
+                        if (Integer.valueOf(response.getCode()) == Constants.SUCCESS_CODE) {
+                            ArrayList<Message> messagesList = response.getLatestConversationResponse().getMessages();
                             if (messagesList != null && messagesList.size() != 0) {
                                 messages.clear();
-                                messages.add(messagesList.get(0));
-                                messages.add(messagesList.get(1));
-                                inboxAdapter.notifyDataSetChanged();
+                                messages.addAll(messagesList);
+                                latestConversationAdapter.notifyDataSetChanged();
                             }
 
 

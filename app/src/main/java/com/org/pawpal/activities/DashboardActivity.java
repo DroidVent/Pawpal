@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.org.pawpal.R;
 import com.org.pawpal.Utils.PrefManager;
+import com.org.pawpal.fragments.ArchiveFragment;
 import com.org.pawpal.fragments.CompleteProfile01;
 import com.org.pawpal.fragments.FindPalFragment;
 import com.org.pawpal.fragments.HomeFragment;
@@ -81,47 +82,8 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-/*        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setItemIconTintList(null);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        username = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tv_username);
-        setUsername();
-        onNavigationItemSelected(navigationView.getMenu().getItem(0));*/
     }
 
-/*    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        int id = item.getItemId();
-
-        if (id == R.id.nav_messages) {
-            // Handle the camera action
-        } else if (id == R.id.nav_find_pal) {
-            Fragment homeFragment = new FindPalFragment();
-            toolbar.setTitle(getString(R.string.findpal));
-            launchFragment(homeFragment, "findpal");
-        } else if (id == R.id.nav_home) {
-            Fragment homeFragment = new HomeFragment();
-            toolbar.setTitle(getString(R.string.dashboard));
-            launchFragment(homeFragment, "home");
-        } else if (id == R.id.nav_pawfile) {
-            Fragment pawfile = new CompleteProfile01();
-            toolbar.setTitle(getString(R.string.pawfile));
-            launchFragment(pawfile, "pawfile");
-        } else if (id == R.id.signout) {
-            PrefManager.clear(this);
-            launchMainScreen();
-        }
-
-        return true;
-    }*/
 
 
     public void launchFragment(Fragment fragment, String tag) {
@@ -202,7 +164,10 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
                     launchFragment(sentFragment, "sent");
                     break;
                 case 2:
+                    Fragment archieveFragment = new ArchiveFragment();
+                    launchFragment(archieveFragment, "archive");
                     break;
+
             }
 
         } else if (groupPosition == 3) {

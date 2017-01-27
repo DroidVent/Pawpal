@@ -22,9 +22,9 @@ import com.org.pawpal.Utils.PrefManager;
 import com.org.pawpal.activities.ConversationActivity;
 import com.org.pawpal.activities.DashboardActivity;
 import com.org.pawpal.adapter.InboxAdapter;
-import com.org.pawpal.interfaces.OnInboxListener;
-import com.org.pawpal.model.ArchieveMessageResponse;
+import com.org.pawpal.interfaces.OnMessagesListener;
 import com.org.pawpal.model.FavoriteMessageResponse;
+import com.org.pawpal.model.GetArchieveMessageResponse;
 import com.org.pawpal.model.GetInboxMessageResponse;
 import com.org.pawpal.model.Message;
 
@@ -39,7 +39,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by hp-pc on 14-01-2017.
  */
 
-public class InboxFragment extends Fragment implements OnInboxListener, SwipeRefreshLayout.OnRefreshListener {
+public class InboxFragment extends Fragment implements OnMessagesListener, SwipeRefreshLayout.OnRefreshListener {
     private View view;
     private RecyclerView recyclerViewInbox;
     private LinearLayoutManager linearLayoutManager;
@@ -179,7 +179,7 @@ public class InboxFragment extends Fragment implements OnInboxListener, SwipeRef
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().postArchieveMessage(profileId, threadId, isArchive)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ArchieveMessageResponse>() {
+                .subscribe(new Observer<GetArchieveMessageResponse>() {
                     @Override
                     public void onCompleted() {
 
@@ -192,7 +192,7 @@ public class InboxFragment extends Fragment implements OnInboxListener, SwipeRef
                     }
 
                     @Override
-                    public void onNext(ArchieveMessageResponse archieveMessageResponse) {
+                    public void onNext(GetArchieveMessageResponse archieveMessageResponse) {
                         progressBar.setVisibility(View.GONE);
                         if (Integer.valueOf(archieveMessageResponse.getCode()) == Constants.SUCCESS_CODE) {
                             Toast.makeText(getContext(), archieveMessageResponse.getMessage(), Toast.LENGTH_LONG).show();

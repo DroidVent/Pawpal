@@ -123,7 +123,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/iv_archieve"
                     android:gravity="center"
-                    android:text="Archieve"
+                    android:text="Archive"
                     android:textAllCaps="false"
                     android:textColor="@color/white" />
             </RelativeLayout>
