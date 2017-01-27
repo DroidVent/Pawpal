@@ -156,7 +156,7 @@
             android:layout_height="wrap_content"
             android:text=""
             android:textAllCaps="false"
-            android:textSize="12sp" />
+            android:textSize="10sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -182,7 +182,7 @@
             android:layout_height="wrap_content"
             android:text=""
             android:textAllCaps="false"
-            android:textSize="12sp" />
+            android:textSize="10sp" />
     </LinearLayout>
 
 
