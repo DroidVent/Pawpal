@@ -10,6 +10,7 @@ import com.org.pawpal.model.GetLatestConversationResponse;
 import com.org.pawpal.model.GetSentMessageResponse;
 import com.org.pawpal.model.GetThreadMessageResponse;
 import com.org.pawpal.model.Login;
+import com.org.pawpal.model.NewestPalsResponse;
 import com.org.pawpal.model.PalActivitiyResponse;
 import com.org.pawpal.model.PostMessage;
 import com.org.pawpal.model.PostProfile;
@@ -90,5 +91,8 @@ public interface PawPalAPI {
 
     @GET("message/get_user_latest_conversation.json")
     Observable<GetLatestConversationResponse> getLatestConversation(@Query("profile_id") String profile_id);
+
+    @GET("user/get_newest_pals.json")
+    Observable<NewestPalsResponse> getNewestPals(@Query("profile_id") String profile_id);
 
 }

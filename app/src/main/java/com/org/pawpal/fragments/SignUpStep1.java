@@ -43,6 +43,7 @@ public class SignUpStep1 extends Fragment {
     private CheckBox cbAge;
     private String userType, name, nickname, email, phone, city, country, makaniNum, password, confirmPassword;
     private BaseActivity baseActivity;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -92,22 +93,26 @@ public class SignUpStep1 extends Fragment {
                                         if (isValidPhone(phone))
                                             if (!checkIfEmpty(city))
                                                 if (!checkIfEmpty(country))
-                                                    if (!checkIfEmpty(password))
-                                                        if (checkIfPasswordMatch(confirmPassword))
-                                                            if (cbAge.isChecked())
+                                                    if (!checkIfEmpty(makaniNum))
+                                                        if (!checkIfEmpty(password))
+                                                            if (checkIfPasswordMatch(confirmPassword))
+                                                                if (cbAge.isChecked())
 
-                                                                launchSignUpStep1Address();
-                                                            else
-                                                                Toast.makeText(getContext(), getString(R.string.age_limit_msg), Toast.LENGTH_LONG).show();
+                                                                    launchSignUpStep1Address();
+                                                                else
+                                                                    Toast.makeText(getContext(), getString(R.string.age_limit_msg), Toast.LENGTH_LONG).show();
+                                                            else {
+                                                                etConfirmPassword.setError("Password mismatch");
+                                                                etConfirmPassword.requestFocus();
+                                                            }
                                                         else {
-                                                            etConfirmPassword.setError("Password mismatch");
-                                                            etConfirmPassword.requestFocus();
+                                                            etPassword.setError("Password cannot be left empty");
+                                                            etPassword.requestFocus();
                                                         }
                                                     else {
-                                                        etPassword.setError("Password cannot be left empty");
-                                                        etPassword.requestFocus();
+                                                        etMakani.setError("Makani Number cannot be left empty");
+                                                        etMakani.requestFocus();
                                                     }
-
                                                 else {
                                                     tvCountry.setError("Country cannot be left empty");
                                                     tvCountry.requestFocus();

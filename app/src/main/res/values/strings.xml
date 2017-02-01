@@ -19,7 +19,7 @@
     <string name="phone">Phone*</string>
     <string name="city">City*</string>
     <string name="country">Country*</string>
-    <string name="makani_number">Makani Number</string>
+    <string name="makani_number">Makani Number*</string>
     <string name="set_password">Set a password</string>
     <string name="confirm_password">Confirm Password*</string>
     <string name="age_text">I\'m 18 years old</string>

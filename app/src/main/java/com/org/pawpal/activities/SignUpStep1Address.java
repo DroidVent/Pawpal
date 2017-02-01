@@ -11,6 +11,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,6 +67,7 @@ import static com.org.pawpal.R.id.map;
 
 public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallback, View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, GoogleMap.OnMapClickListener {
     private static final int UPDATE_LOC = 1;
+    private static final int GET_ADDRESS = 2;
     private static final int ERROR = 0;
     private static final String TAG = SignUpStep1Address.class.getSimpleName();
     private static final int GPS_PERMISSION_REQUEST = 100;
@@ -122,8 +124,7 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         mlocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             checkForGPSPermission();
-        }
-        else
+        } else
             showGPSDialog();
     }
 
@@ -139,10 +140,12 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
 
             if (intent.getAction().matches("android.location.PROVIDERS_CHANGED")) {
                 Log.e("GPS: ", "Enabled");
+                progressBar.setVisibility(View.VISIBLE);
                 checkForGPSPermission();
             }
         }
     };
+
     protected synchronized void buildGoogleApiClient() {
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -209,7 +212,7 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         else {
             fusedLocationProviderApi = LocationServices.FusedLocationApi;
             if (mGoogleApiClient.isConnected())
-                fusedLocationProviderApi.requestLocationUpdates(mGoogleApiClient, locationRequest,this);
+                fusedLocationProviderApi.requestLocationUpdates(mGoogleApiClient, locationRequest, this);
             Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mLastLocation != null) {
                 animateCameraToPosition(mLastLocation);
@@ -217,8 +220,8 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         }
 
     }
-    private void animateCameraToPosition(Location location)
-    {
+
+    private void animateCameraToPosition(Location location) {
         mMap.clear();
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17.0f);
@@ -231,7 +234,8 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         etLongt.setText("");
         etLat.setText(lat);
         etLongt.setText(longt);
-        getCityStateFromLatLng(latLng);
+//        getCityStateFromLatLng(latLng);
+        new GetCityStateAsync().execute(latLng);
     }
 
     private MarkerOptions getMarkerOption(LatLng latLng) {
@@ -258,26 +262,12 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         }
     }
 
-    public LatLng getLocationFromAddress(String strAddress) {
-
-        Geocoder coder = new Geocoder(this);
-        List<Address> address;
-        LatLng p1 = null;
+    public void getLocationFromAddress(String strAddress) {
 
         try {
-            address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return null;
-            }
-            Address location = address.get(0);
-            location.getLatitude();
-            location.getLongitude();
-
-            p1 = new LatLng(location.getLatitude(), location.getLongitude());
-            Log.e("Location:", p1.latitude + " " + p1.longitude);
             Message msg = handler.obtainMessage();
             msg.what = UPDATE_LOC;
-            msg.obj = p1;
+            msg.obj = strAddress;
             msg.arg1 = 1;
             handler.sendMessage(msg);
 
@@ -285,27 +275,40 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         } catch (Exception ex) {
 
             ex.printStackTrace();
-            Message msg = handler.obtainMessage();
-            msg.what = ERROR;
-            msg.obj = p1;
-            msg.arg1 = 1;
-            handler.sendMessage(msg);
+
         }
 
-        return p1;
     }
 
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+
             if (msg.what == UPDATE_LOC) {
-                setMapAddress((LatLng) msg.obj);
-            } else if (msg.what == ERROR)
+                setMapAddress((String) msg.obj);
+            } else if (msg.what == GET_ADDRESS) {
+                progressBar.setVisibility(View.VISIBLE);
+                getCityState((LatLng) msg.obj);
                 progressBar.setVisibility(View.GONE);
-            super.handleMessage(msg);
+            } else if (msg.what == ERROR)
+            {
+                progressBar.setVisibility(View.GONE);
+                super.handleMessage(msg);
+            }
+
         }
     };
-    private void getCityStateFromLatLng(LatLng latLng)
+
+    private void getCityStateFromLatLng(LatLng latLng) {
+        Message msg = handler.obtainMessage();
+        msg.what = GET_ADDRESS;
+        msg.obj = latLng;
+        msg.arg1 = 1;
+        handler.sendMessage(msg);
+
+
+    }
+    private void getCityState(LatLng latLng)
     {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = null;
@@ -314,11 +317,10 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
             String city = addresses.get(0).getAddressLine(0);
             String stateName = addresses.get(0).getAddressLine(1);
             String countryName = addresses.get(0).getAddressLine(2);
-            etAddress.setText(city+ " "+stateName+" "+countryName);
+            etAddress.setText(city + " " + stateName + " " + countryName);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
     @Override
     public void onClick(View view) {
@@ -342,25 +344,45 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
 
     private void searchAddress() {
         progressBar.setVisibility(View.VISIBLE);
-        final LatLng[] latLng = new LatLng[1];
         address = etAddress.getText().toString();
-        new Thread(new Runnable() {
-            public void run() {
-                latLng[0] = getLocationFromAddress(address);
-            }
-        }).start();
+        new SearchAddressAsync().execute(address);
+//        getLocationFromAddress(address);
     }
 
-    private void setMapAddress(LatLng latLng) {
-        progressBar.setVisibility(View.GONE);
+    private void setMapAddress(String addressString) {
+        Geocoder coder = new Geocoder(this);
+        List<Address> address;
+        LatLng latLng = null;
+        try {
+            address = coder.getFromLocationName(addressString, 5);
+            if (address == null) {
+                return;
+            }
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
 
-        hideKeyBoard();
-        updateCamera(latLng);
+            latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            Log.e("Location:", latLng.latitude + " " + latLng.longitude);
+
+            hideKeyBoard();
+            progressBar.setVisibility(View.GONE);
+            updateCamera(latLng);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            Message msg = handler.obtainMessage();
+            msg.what = ERROR;
+            msg.obj = null;
+            msg.arg1 = 1;
+            handler.sendMessage(msg);
+        }
+
     }
 
     private void updateCamera(LatLng latLng) {
         float maxZoom = 17.0f;
-        if (fusedLocationProviderApi != null)
+        if (fusedLocationProviderApi != null && mGoogleApiClient.isConnected())
             fusedLocationProviderApi.removeLocationUpdates(mGoogleApiClient, this);
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, maxZoom);
         mMap.clear();
@@ -372,7 +394,8 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         longt = String.valueOf(latLng.longitude);
         etLat.setText(lat);
         etLongt.setText(longt);
-        getCityStateFromLatLng(latLng);
+//        getCityStateFromLatLng(latLng);
+        new GetCityStateAsync().execute(latLng);
 
     }
 
@@ -464,5 +487,95 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
     @Override
     public void onMapClick(LatLng latLng) {
         updateCamera(latLng);
+    }
+    class SearchAddressAsync extends AsyncTask<String, String, LatLng> {
+
+        @Override
+        protected LatLng doInBackground(String... addrs) {
+            String address = addrs[0];
+            Geocoder coder = new Geocoder(SignUpStep1Address.this);
+            List<Address> addresses;
+            LatLng latLng = null;
+            try {
+                addresses = coder.getFromLocationName(address, 5);
+                if (address == null) {
+                    return null;
+                }
+                Address location = addresses.get(0);
+                location.getLatitude();
+                location.getLongitude();
+
+                latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                Log.e("Location:", latLng.latitude + " " + latLng.longitude);
+
+
+                return latLng;
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            hideKeyBoard();
+
+        }
+
+        @Override
+        protected void onPostExecute(LatLng result) {
+            progressBar.setVisibility(View.GONE);
+            if (result != null)
+                updateCamera(result);
+
+        }
+    }
+    class GetCityStateAsync extends AsyncTask<LatLng, String, String> {
+
+        @Override
+        protected String doInBackground(LatLng... addrs) {
+            Geocoder geocoder = new Geocoder(SignUpStep1Address.this, Locale.getDefault());
+            LatLng latLng = addrs[0];
+            List<Address> addresses = null;
+            try {
+                addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                Address returnedAddress = addresses.get(0);
+              /*  String city = addresses.get(0).getAddressLine(0);
+                String stateName = addresses.get(0).getAddressLine(1);
+                String countryName = addresses.get(0).getAddressLine(2);*/
+                StringBuilder strReturnedAddress = new StringBuilder();
+                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append(" ");
+                }
+                return strReturnedAddress.toString();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        return null;
+        }
+
+        @Override
+        protected void onPostExecute(String address) {
+            super.onPostExecute(address);
+            progressBar.setVisibility(View.GONE);
+            if (address != null)
+            {
+                etAddress.setText(address);
+
+            }
+            if (fusedLocationProviderApi != null && mGoogleApiClient.isConnected())
+                fusedLocationProviderApi.removeLocationUpdates(mGoogleApiClient, SignUpStep1Address.this);
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressBar.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+        }
     }
 }

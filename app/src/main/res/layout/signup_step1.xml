@@ -9,31 +9,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <!--    <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:src="@mipmap/horizontal_small_strip" />
-
-            <ImageView
-                android:layout_width="68dp"
-                android:layout_height="28dp"
-                android:layout_gravity="right|center"
-                android:src="@mipmap/pp_icon" />
-
-            <com.org.pawpal.custom.CustomTextView
-                android:id="@+id/tv_create"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/create_account"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-        </FrameLayout>-->
-
         <com.org.pawpal.custom.CustomTextView
             android:id="@+id/tv_step1"
             android:layout_width="match_parent"
