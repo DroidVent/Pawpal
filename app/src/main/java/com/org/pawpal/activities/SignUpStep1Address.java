@@ -327,7 +327,11 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         switch (view.getId()) {
             case R.id.search:
                 hideKeyBoard();
-                searchAddress();
+                if (isNetworkAvailable()) {
+                    searchAddress();
+                }
+                else
+                    showSnackBar(getString(R.string.network_unavailable), (RelativeLayout) findViewById(R.id.parent_view) );
                 break;
             case R.id.bt_continue:
                 continueToSecondStep();
@@ -417,39 +421,45 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
     }
 
     private void doRegister() {
-        hideKeyBoard();
-        showHideProgressBar(View.VISIBLE);
-        PawPalAPI pawPalAPI = MyApplication.getInstance().getPawPalAPI();
-        Register register = new Register(userType, name, nickname, email, phone, city, country, makaniNum, password, address, lat, longt);
+        if (isNetworkAvailable())
+        {
+            hideKeyBoard();
+            showHideProgressBar(View.VISIBLE);
+            PawPalAPI pawPalAPI = MyApplication.getInstance().getPawPalAPI();
+            Register register = new Register(userType, name, nickname, email, phone, city, country, makaniNum, password, address, lat, longt);
 
-        Call<User> user = pawPalAPI.registerUser(register);
-        user.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            Call<User> user = pawPalAPI.registerUser(register);
+            user.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
 
-                showHideProgressBar(View.GONE);
-                if (response != null) {
-                    if (response.code() == Constants.SUCCESS_CODE) {
+                    showHideProgressBar(View.GONE);
+                    if (response != null) {
+                        if (response.code() == Constants.SUCCESS_CODE) {
 
-                        success = true;
-                        ((LinearLayout) findViewById(R.id.step1_view)).setVisibility(View.GONE);
-                        String emailMsg = getString(R.string.email_sent, email);
-                        ((CustomTextView) findViewById(R.id.email_msg)).setText(emailMsg);
-                        ((LinearLayout) findViewById(R.id.ll_step2_view)).setVisibility(View.VISIBLE);
-                    } else
-                        showSnackBar(response.message(), (RelativeLayout) findViewById(R.id.parent_view));
-                    Log.e("SignUp: ", "Response: " + response.code() +
-                            " usertype:" + userType + " name:" + name + " nickname:" + nickname + " email:" + email + " phone:" + phone + " city:" + city + " country:" + country + " makani:" + makaniNum + " Password:" + password);
+                            success = true;
+                            ((LinearLayout) findViewById(R.id.step1_view)).setVisibility(View.GONE);
+                            String emailMsg = getString(R.string.email_sent, email);
+                            ((CustomTextView) findViewById(R.id.email_msg)).setText(emailMsg);
+                            ((LinearLayout) findViewById(R.id.ll_step2_view)).setVisibility(View.VISIBLE);
+                        } else
+                            showSnackBar(response.message(), (RelativeLayout) findViewById(R.id.parent_view));
+                        Log.e("SignUp: ", "Response: " + response.code() +
+                                " usertype:" + userType + " name:" + name + " nickname:" + nickname + " email:" + email + " phone:" + phone + " city:" + city + " country:" + country + " makani:" + makaniNum + " Password:" + password);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                showSnackBar(getString(R.string.wrong), (LinearLayout) findViewById(R.id.parent_view));
-                showHideProgressBar(View.GONE);
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    showSnackBar(getString(R.string.wrong), (LinearLayout) findViewById(R.id.parent_view));
+                    showHideProgressBar(View.GONE);
 
-            }
-        });
+                }
+            });
+        }
+        else
+            showSnackBar(getString(R.string.network_unavailable), (RelativeLayout) findViewById(R.id.parent_view));
+
     }
 
     @Override

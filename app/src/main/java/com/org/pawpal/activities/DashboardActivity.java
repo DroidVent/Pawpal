@@ -8,12 +8,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.org.pawpal.MyApplication;
 import com.org.pawpal.R;
+import com.org.pawpal.Utils.Constants;
 import com.org.pawpal.Utils.PrefManager;
+import com.org.pawpal.Utils.Utility;
 import com.org.pawpal.fragments.ArchiveFragment;
 import com.org.pawpal.fragments.CompleteProfile01;
 import com.org.pawpal.fragments.FindPalFragment;
@@ -21,9 +25,14 @@ import com.org.pawpal.fragments.HomeFragment;
 import com.org.pawpal.fragments.InboxFragment;
 import com.org.pawpal.fragments.NavigationDrawerFragment;
 import com.org.pawpal.fragments.SentFragment;
+import com.org.pawpal.model.RegisterDeviceResponse;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by hp-pc on 03-12-2016.
@@ -41,12 +50,14 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
 
     private CharSequence mTitle;
     private DrawerLayout mDrawerLayout;
+    private CompositeSubscription compositeSubscription;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         setUpToolbar();
+        compositeSubscription = new CompositeSubscription();
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -56,9 +67,47 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         username = (TextView) mDrawerLayout.findViewById(R.id.tv_username);
-        ivPhoto = (CircleImageView)mDrawerLayout.findViewById(R.id.profile_image);
+        ivPhoto = (CircleImageView) mDrawerLayout.findViewById(R.id.profile_image);
         setUsername();
         onNavigationDrawerItemSelected(0, -1);
+        if (isNetworkAvailable())
+            registerDevice();
+
+    }
+
+    private void registerDevice() {
+        String profileId = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID);
+        String deviceId = getDeviceId();
+        String fcmToken = PrefManager.retrieve(this, PrefManager.PersistenceKey.FCM_TOKEN);
+        Log.e(TAG, "Refreshed token: " + fcmToken);
+        boolean isEmpty = Utility.isEmptyString(fcmToken);
+        if (!isEmpty)
+        {
+            compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().registerDevice(profileId, fcmToken, deviceId, "android")
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<RegisterDeviceResponse>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(RegisterDeviceResponse response) {
+
+                            if (Integer.valueOf(response.getCode()) == Constants.SUCCESS_CODE) {
+                                Log.e(TAG, "Token sent");
+
+                            }
+                        }
+                    }));
+        }
 
     }
 
@@ -84,7 +133,11 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
         getSupportActionBar().setHomeButtonEnabled(true);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        compositeSubscription.unsubscribe();
+    }
 
     public void launchFragment(Fragment fragment, String tag) {
         getSupportFragmentManager().beginTransaction()

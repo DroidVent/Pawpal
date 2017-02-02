@@ -44,7 +44,7 @@ public class LatestConversationAdapter extends RecyclerView.Adapter<LatestConver
     @Override
     public void onBindViewHolder(LatestConversationAdapter.MyViewHolder holder, final int position) {
         Message message = messages.get(position);
-        Integer isStar = message.getIsFav();
+      /*  Integer isStar = message.getIsFav();
         int isArchieve = message.getIs_archive();
         if (isStar == null || isStar == 0)
         {
@@ -63,7 +63,11 @@ public class LatestConversationAdapter extends RecyclerView.Adapter<LatestConver
             holder.tvArchieve.setText("Archive");
         }
         else
-            holder.tvArchieve.setText("Unarchive");
+            holder.tvArchieve.setText("Unarchive");*/
+        holder.starUnstar.setVisibility(View.GONE);
+        holder.archieve.setVisibility(View.GONE);
+        holder.ivStar.setVisibility(View.GONE);
+        holder.ivStarUnstar.setVisibility(View.GONE);
         holder.tvMessage.setText(message.getMessage_text());
         holder.tvDate.setText(message.getCreated_date());
         holder.tvUsername.setText(message.getName());

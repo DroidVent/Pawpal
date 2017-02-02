@@ -3,6 +3,7 @@ package com.org.pawpal.activities;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +56,11 @@ public class BaseActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),InputMethodManager.HIDE_NOT_ALWAYS);
 
+    }
+    protected String getDeviceId()
+    {
+        return Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
     }
 
 }
