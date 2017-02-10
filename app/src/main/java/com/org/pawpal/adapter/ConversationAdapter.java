@@ -32,7 +32,7 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         this.threadMessages = conversations;
         this.context = context;
         this.username = name;
-        ownPhoto = PrefManager.retrieve(context, PrefManager.PersistenceKey.PROFILE_IMAGE);
+        ownPhoto = PrefManager.retrieve(context, PrefManager.PersistenceKey.PROFILE_IMAGE,Constants.GENERAL_PREF_NAME);
     }
 
     @Override

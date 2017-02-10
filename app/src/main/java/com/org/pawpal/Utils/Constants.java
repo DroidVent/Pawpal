@@ -7,8 +7,12 @@ package com.org.pawpal.Utils;
 public class Constants {
     public static final String APP_ID = "1";
     public static final String APP_KEY = "2yghe76mzs95oa17fbvns34ly7";
-    public static final String PREF_NAME = "pawpal";
+    public static final String GENERAL_PREF_NAME = "pawpal";
+    public static final String FCM_PREF_NAME = "pawpal_fcm";
     public static final int FILTER_REQUEST = 100;
+    public static final String PUSH_NOTIFICATION = "push";
+    public static final int NOTIFICATION_ID = 100;
+    public static final String BUNDLE_NOTIFICATION_DATA = "notification_bundle";
     public static String ENDPOINT = "http://subdominio.pawpal.ae/fsilva_pawal/";
 
     public static int SUCCESS_CODE = 200;

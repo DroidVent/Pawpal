@@ -19,7 +19,7 @@
     <string name="phone">Phone*</string>
     <string name="city">City*</string>
     <string name="country">Country*</string>
-    <string name="makani_number">Makani Number*</string>
+    <string name="makani_number">Makani Number</string>
     <string name="set_password">Set a password</string>
     <string name="confirm_password">Confirm Password*</string>
     <string name="age_text">I\'m 18 years old</string>
@@ -76,6 +76,7 @@
     <string name="sent">Sent</string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
+    <string name="subscribe">Please subscribe to send message</string>
     <string-array name="petsize_array">
         <item>Pet\'s Size Allowed</item>
         <item>Small</item>
@@ -109,4 +110,6 @@
         <item>Biweekly</item>
         <item>Monthly</item>
     </string-array>
+    <string name="facebook_app_id">254242885018649</string>
+    <string name="fb_login_protocol_scheme">fb254242885018649</string>
 </resources>

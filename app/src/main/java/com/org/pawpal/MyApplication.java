@@ -2,6 +2,8 @@ package com.org.pawpal;
 
 import android.support.multidex.MultiDexApplication;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.org.pawpal.Utils.Constants;
 import com.org.pawpal.server.ApiInterceptor;
 import com.org.pawpal.server.PawPalAPI;
@@ -23,6 +25,8 @@ public class MyApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
         sInstance = this;
         initRetrofit();
     }
@@ -47,5 +51,11 @@ public class MyApplication extends MultiDexApplication {
     public PawPalAPI getPawPalAPI() {
         return pawPalAPI;
 
+    }
+    public Retrofit getRetrofit()
+    {
+        if (retrofit != null)
+            return retrofit;
+        return null;
     }
 }

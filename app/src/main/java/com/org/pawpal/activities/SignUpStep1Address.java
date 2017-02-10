@@ -43,12 +43,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 import com.org.pawpal.MyApplication;
 import com.org.pawpal.R;
 import com.org.pawpal.Utils.Constants;
 import com.org.pawpal.custom.CustomTextView;
 import com.org.pawpal.model.Register;
 import com.org.pawpal.model.User;
+import com.org.pawpal.server.ErrorResponse;
 import com.org.pawpal.server.PawPalAPI;
 
 import java.io.IOException;
@@ -58,6 +60,7 @@ import java.util.Locale;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.org.pawpal.R.id.map;
 
@@ -82,7 +85,7 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
     private LocationManager mlocManager;
     private LocationRequest locationRequest;
     private FusedLocationProviderApi fusedLocationProviderApi;
-
+    private CompositeSubscription compositeSubscription;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,6 +125,7 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         btnContinueToLogin.setOnClickListener(this);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         mlocManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        compositeSubscription = new CompositeSubscription();
         if (mlocManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             checkForGPSPermission();
         } else
@@ -132,6 +136,7 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mGpsSwitchStateReceiver);
+        compositeSubscription.unsubscribe();
     }
 
     private BroadcastReceiver mGpsSwitchStateReceiver = new BroadcastReceiver() {
@@ -423,6 +428,45 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
     private void doRegister() {
         if (isNetworkAvailable())
         {
+           /* hideKeyBoard();
+            showHideProgressBar(View.VISIBLE);
+            Register register = new Register(userType, name, nickname, email, phone, city, country, makaniNum, password, address, lat, longt);
+*/
+
+        /*    compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().registerUser(register)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<User>() {
+                        @Override
+                        public void onCompleted() {
+                            progressBar.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            progressBar.setVisibility(View.GONE);
+                            dashboardActivity.showSnackBar(getString(R.string.wrong), (RelativeLayout) view.findViewById(R.id.parent_view));
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(User response) {
+                            showHideProgressBar(View.GONE);
+                            if (response != null) {
+                                if (response.getCode() == Constants.SUCCESS_CODE) {
+
+                                    success = true;
+                                    ((LinearLayout) findViewById(R.id.step1_view)).setVisibility(View.GONE);
+                                    String emailMsg = getString(R.string.email_sent, email);
+                                    ((CustomTextView) findViewById(R.id.email_msg)).setText(emailMsg);
+                                    ((LinearLayout) findViewById(R.id.ll_step2_view)).setVisibility(View.VISIBLE);
+                                } else
+                                    showSnackBar(response.message(), (RelativeLayout) findViewById(R.id.parent_view));
+                                Log.e("SignUp: ", "Response: " + response.code() +
+                                        " usertype:" + userType + " name:" + name + " nickname:" + nickname + " email:" + email + " phone:" + phone + " city:" + city + " country:" + country + " makani:" + makaniNum + " Password:" + password);
+                            }}
+                    }));
+*/
             hideKeyBoard();
             showHideProgressBar(View.VISIBLE);
             PawPalAPI pawPalAPI = MyApplication.getInstance().getPawPalAPI();
@@ -434,24 +478,38 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
                 public void onResponse(Call<User> call, Response<User> response) {
 
                     showHideProgressBar(View.GONE);
-                    if (response != null) {
-                        if (response.code() == Constants.SUCCESS_CODE) {
+                    try {
+                        if (response != null) {
+                            if (response.code() == Constants.SUCCESS_CODE) {
 
-                            success = true;
-                            ((LinearLayout) findViewById(R.id.step1_view)).setVisibility(View.GONE);
-                            String emailMsg = getString(R.string.email_sent, email);
-                            ((CustomTextView) findViewById(R.id.email_msg)).setText(emailMsg);
-                            ((LinearLayout) findViewById(R.id.ll_step2_view)).setVisibility(View.VISIBLE);
-                        } else
-                            showSnackBar(response.message(), (RelativeLayout) findViewById(R.id.parent_view));
-                        Log.e("SignUp: ", "Response: " + response.code() +
-                                " usertype:" + userType + " name:" + name + " nickname:" + nickname + " email:" + email + " phone:" + phone + " city:" + city + " country:" + country + " makani:" + makaniNum + " Password:" + password);
+                                success = true;
+                                ((LinearLayout) findViewById(R.id.step1_view)).setVisibility(View.GONE);
+                                String emailMsg = getString(R.string.email_sent, email);
+                                ((CustomTextView) findViewById(R.id.email_msg)).setText(emailMsg);
+                                ((LinearLayout) findViewById(R.id.ll_step2_view)).setVisibility(View.VISIBLE);
+                            } else
+                            {
+                                String errorMsg = response.errorBody().string();
+                                Gson gson = new Gson();
+                                ErrorResponse errorResponse = gson.fromJson(errorMsg, ErrorResponse.class);
+                                showSnackBar(errorResponse.getMsg(), (RelativeLayout) findViewById(R.id.parent_view));
+                            }
+
+                            Log.e("SignUp: ", "Response: " + response.code() +
+                                    " usertype:" + userType + " name:" + name + " nickname:" + nickname + " email:" + email + " phone:" + phone + " city:" + city + " country:" + country + " makani:" + makaniNum + " Password:" + password);
+                        }
                     }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+
                 }
 
                 @Override
                 public void onFailure(Call<User> call, Throwable t) {
-                    showSnackBar(getString(R.string.wrong), (LinearLayout) findViewById(R.id.parent_view));
+                    showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
+                    String st = call.request().body().contentType().toString();
                     showHideProgressBar(View.GONE);
 
                 }

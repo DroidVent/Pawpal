@@ -93,7 +93,6 @@ public class SignUpStep1 extends Fragment {
                                         if (isValidPhone(phone))
                                             if (!checkIfEmpty(city))
                                                 if (!checkIfEmpty(country))
-                                                    if (!checkIfEmpty(makaniNum))
                                                         if (!checkIfEmpty(password))
                                                             if (checkIfPasswordMatch(confirmPassword))
                                                                 if (cbAge.isChecked())
@@ -109,10 +108,6 @@ public class SignUpStep1 extends Fragment {
                                                             etPassword.setError("Password cannot be left empty");
                                                             etPassword.requestFocus();
                                                         }
-                                                    else {
-                                                        etMakani.setError("Makani Number cannot be left empty");
-                                                        etMakani.requestFocus();
-                                                    }
                                                 else {
                                                     tvCountry.setError("Country cannot be left empty");
                                                     tvCountry.requestFocus();

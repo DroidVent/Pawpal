@@ -20,6 +20,7 @@ import com.org.pawpal.Utils.PrefManager;
 import com.org.pawpal.adapter.ConversationAdapter;
 import com.org.pawpal.model.GetThreadMessageResponse;
 import com.org.pawpal.model.PostMessage;
+import com.org.pawpal.model.PushNotification;
 import com.org.pawpal.model.SendMessageResponse;
 import com.org.pawpal.model.ThreadMessage;
 import com.org.pawpal.model.ThreadMessageResponse;
@@ -40,7 +41,7 @@ import static com.org.pawpal.R.string.conversations;
  * Created by hp-pc on 14-01-2017.
  */
 
-public class ConversationActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener  {
+public class ConversationActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
     private RecyclerView recyclerViewConversation;
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<ThreadMessage> threadMessages;
@@ -49,17 +50,31 @@ public class ConversationActivity extends BaseActivity implements SwipeRefreshLa
     private String threadId, otherUserProfileId;
     private ProgressBar progressBar;
     private CircleImageView ivProfileImage;
-    private TextView tvCOnversationUser,tvConversationWith, tvMemberSince, tvDistance, tvViewProfile;
+    private TextView tvCOnversationUser, tvConversationWith, tvMemberSince, tvDistance, tvViewProfile;
     private RelativeLayout sendMessage;
     private EditText etMsg;
     private SwipeRefreshLayout swipeRefreshLayout;
+    String isSubscribed;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.conversation_activity);
         getBundleData();
+        checkPushBundle();
         init();
         getMessages();
+    }
+
+    private void checkPushBundle() {
+        Bundle bundle = getIntent().getExtras();
+        PushNotification pushNotification = null;
+        if (bundle != null)
+        {
+            pushNotification = bundle.getParcelable(Constants.BUNDLE_NOTIFICATION_DATA);
+            if (pushNotification != null)
+                threadId = pushNotification.getThread_id();
+        }
     }
 
     private void getBundleData() {
@@ -74,22 +89,28 @@ public class ConversationActivity extends BaseActivity implements SwipeRefreshLa
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(conversations));
         threadMessages = new ArrayList<>();
-        tvCOnversationUser = (TextView)findViewById(R.id.tv_username);
-        sendMessage = (RelativeLayout)findViewById(R.id.rl_send_msg);
-        etMsg = (EditText)findViewById(R.id.et_msg);
+        tvCOnversationUser = (TextView) findViewById(R.id.tv_username);
+        sendMessage = (RelativeLayout) findViewById(R.id.rl_send_msg);
+        etMsg = (EditText) findViewById(R.id.et_msg);
         ivProfileImage = (CircleImageView) findViewById(R.id.profile_image);
-        tvMemberSince = (TextView)findViewById(R.id.tv_member_txt);
-        tvDistance = (TextView)findViewById(R.id.tv_location);
-        tvViewProfile = (TextView)findViewById(R.id.tv_view_profile);
-        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipe_refresh);
-        tvConversationWith = (TextView)findViewById(R.id.tv_conversation_with_user);
-        progressBar = (ProgressBar)findViewById(R.id.progress_bar);
+        tvMemberSince = (TextView) findViewById(R.id.tv_member_txt);
+        tvDistance = (TextView) findViewById(R.id.tv_location);
+        tvViewProfile = (TextView) findViewById(R.id.tv_view_profile);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        tvConversationWith = (TextView) findViewById(R.id.tv_conversation_with_user);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         recyclerViewConversation = (RecyclerView) findViewById(R.id.rv_messages);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerViewConversation.setLayoutManager(linearLayoutManager);
+        isSubscribed = PrefManager.retrieve(this, PrefManager.PersistenceKey.IS_SUBSCRIBED, Constants.GENERAL_PREF_NAME);
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+             /*   if (isSubscribed.equalsIgnoreCase("Y")) {
+                    if (!etMsg.getText().toString().isEmpty())
+                        sendReply(etMsg.getText().toString());
+                } else
+                    Toast.makeText(ConversationActivity.this, getString(R.string.subscribe), Toast.LENGTH_LONG).show();*/
                 if (!etMsg.getText().toString().isEmpty())
                     sendReply(etMsg.getText().toString());
             }
@@ -106,14 +127,14 @@ public class ConversationActivity extends BaseActivity implements SwipeRefreshLa
         });
 
     }
-    private void sendReply(final String message)
-    {
+
+    private void sendReply(final String message) {
         progressBar.setVisibility(View.VISIBLE);
         PostMessage postMessage = new PostMessage();
         postMessage.setMessage_text(message);
         postMessage.setUser_profile_id(otherUserProfileId);
         postMessage.setThread_id(threadId);
-        postMessage.setProfile_id(PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID));
+        postMessage.setProfile_id(PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME));
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().sendMessage(postMessage)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -132,15 +153,23 @@ public class ConversationActivity extends BaseActivity implements SwipeRefreshLa
                     @Override
                     public void onNext(SendMessageResponse sendMessageResponse) {
                         progressBar.setVisibility(View.GONE);
+                        hideKeyBoard();
                         if (Integer.valueOf(sendMessageResponse.getCode()) == Constants.SUCCESS_CODE) {
                             ThreadMessage threadMessage = sendMessageResponse.getThreadMessage();
                             threadMessage.setIs_own_msg(1);
                             threadMessages.add(threadMessage);
                             conversationAdapter.notifyDataSetChanged();
-                            recyclerViewConversation.smoothScrollToPosition(conversationAdapter.getItemCount()-1);
+                            recyclerViewConversation.scrollToPosition(conversationAdapter.getItemCount() - 1);
                             etMsg.setText("");
                             hideKeyBoard();
-                        } else
+                        }
+                        else if (Integer.valueOf(sendMessageResponse.getCode()) == 201)
+                        {
+
+                            PrefManager.store(ConversationActivity.this, PrefManager.PersistenceKey.IS_SUBSCRIBED, "N", Constants.GENERAL_PREF_NAME);
+                            showSnackBar(sendMessageResponse.getMessage(), (RelativeLayout) findViewById(R.id.parent_view));
+                        }
+                        else
                             showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
                     }
                 }));
@@ -168,7 +197,7 @@ public class ConversationActivity extends BaseActivity implements SwipeRefreshLa
         if (!swipeRefreshLayout.isRefreshing())
             showHideProgressBar(View.VISIBLE);
 //        recyclerViewConversation.setVisibility(View.GONE);
-        String profileId = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID);
+        String profileId = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME);
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getThreadMessages(profileId, threadId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -196,13 +225,14 @@ public class ConversationActivity extends BaseActivity implements SwipeRefreshLa
                         if (Integer.valueOf(response.getCode()) == Constants.SUCCESS_CODE) {
                             ArrayList<ThreadMessage> messages = response.getResponse().getMessages();
 
-                            if (messages != null && messages.size()!= 0) {
+                            if (messages != null && messages.size() != 0) {
                                 setData(response.getResponse());
                                 threadMessages.clear();
                                 threadMessages.addAll(messages);
                                 conversationAdapter = new ConversationAdapter(ConversationActivity.this, threadMessages, response.getResponse().getProfile().getName());
                                 recyclerViewConversation.setAdapter(conversationAdapter);
                                 otherUserProfileId = response.getResponse().getProfile().getProfile_id();
+                                recyclerViewConversation.scrollToPosition(conversationAdapter.getItemCount() - 1);
 //                                conversationAdapter.notifyDataSetChanged();
                             }
 
@@ -217,10 +247,9 @@ public class ConversationActivity extends BaseActivity implements SwipeRefreshLa
         ThreadProfile threadProfile = response.getProfile();
         tvCOnversationUser.setText(threadProfile.getName());
         tvMemberSince.setText(threadProfile.getProfile_created_at());
-        tvConversationWith.setText("Conversation with "+threadProfile.getName());
-        tvDistance.setText(threadProfile.getDistance()+" from you");
-        if (threadProfile.getUserImages() != null && threadProfile.getUserImages().size() != 0)
-        {
+        tvConversationWith.setText("Conversation with " + threadProfile.getName());
+        tvDistance.setText(threadProfile.getDistance() + " from you");
+        if (threadProfile.getUserImages() != null && threadProfile.getUserImages().size() != 0) {
             String imageUrl = threadProfile.getUserImages().get(0).getUrl();
             Picasso.with(this).load(imageUrl).fit().centerCrop().placeholder(R.mipmap.img_default).into(ivProfileImage);
         }

@@ -9,6 +9,7 @@ public class UserData {
     private String user_id;
     private String profile_id;
     private String name;
+    private String is_subscribed;
     private ArrayList<UserImages> images;
 
     public String getUser_id() {
@@ -41,5 +42,13 @@ public class UserData {
 
     public void setImages(ArrayList<UserImages> images) {
         this.images = images;
+    }
+
+    public String getIs_subscribed() {
+        return is_subscribed;
+    }
+
+    public void setIs_subscribed(String is_subscribed) {
+        this.is_subscribed = is_subscribed;
     }
 }

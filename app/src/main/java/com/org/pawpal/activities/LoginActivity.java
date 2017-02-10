@@ -10,7 +10,16 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.org.pawpal.MyApplication;
 import com.org.pawpal.R;
 import com.org.pawpal.Utils.Constants;
@@ -19,6 +28,8 @@ import com.org.pawpal.model.Login;
 import com.org.pawpal.model.User;
 import com.org.pawpal.model.UserData;
 import com.org.pawpal.server.PawPalAPI;
+
+import org.json.JSONObject;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,6 +45,9 @@ public class LoginActivity extends BaseActivity {
     private String email;
     private ProgressBar progressBar;
     private CheckBox cbRememberMe;
+    private LoginButton fbLoginButton;
+    private Button fbLogin;
+    private CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +65,9 @@ public class LoginActivity extends BaseActivity {
         etPassword = (EditText) findViewById(R.id.et_password);
         cbRememberMe = (CheckBox) findViewById(R.id.cb_remember);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        fbLoginButton = (LoginButton) findViewById(R.id.login_button);
+        fbLogin = (Button) findViewById(R.id.btn_facebook);
+
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,6 +88,60 @@ public class LoginActivity extends BaseActivity {
                     etEmail.setError(getString(R.string.email_invalid));
             }
         });
+        fbLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fbLoginButton.performClick();
+            }
+        });
+        initFacebookCallback();
+    }
+
+    private void initFacebookCallback() {
+        fbLoginButton.setReadPermissions("email");
+        callbackManager = CallbackManager.Factory.create();
+        fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(
+                                    JSONObject object,
+                                    GraphResponse response) {
+                                String fbToken = null;
+                                AccessToken token = AccessToken.getCurrentAccessToken();
+                                if (token != null) {
+                                    fbToken = token.getToken();
+                                }
+                                try {
+                                    Toast.makeText(LoginActivity.this, "success "+token.getPermissions(), Toast.LENGTH_LONG).show();
+//                                    socialLoginServerRequest(object.getString("name"), object.getString("email"), object.getString("id"), fbToken, 1);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email");
+                request.setParameters(parameters);
+                request.executeAsync();
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+    public void onActivityResult(int requestCode, int responseCode, Intent intent) {
+        callbackManager.onActivityResult(requestCode, responseCode, intent);
     }
 
     @Override
@@ -135,13 +206,14 @@ public class LoginActivity extends BaseActivity {
 
     private void saveCreadentials(User user) {
         UserData data = user.getUserData();
-        PrefManager.store(this, PrefManager.PersistenceKey.USER_ID, data.getUser_id());
-        PrefManager.store(this, PrefManager.PersistenceKey.PROFILE_ID, data.getProfile_id());
-        PrefManager.store(this, PrefManager.PersistenceKey.USER_NAME, data.getName());
+        PrefManager.store(this, PrefManager.PersistenceKey.USER_ID, data.getUser_id(),Constants.GENERAL_PREF_NAME);
+        PrefManager.store(this, PrefManager.PersistenceKey.PROFILE_ID, data.getProfile_id(),Constants.GENERAL_PREF_NAME);
+        PrefManager.store(this, PrefManager.PersistenceKey.USER_NAME, data.getName(),Constants.GENERAL_PREF_NAME);
+        PrefManager.store(this, PrefManager.PersistenceKey.IS_SUBSCRIBED, data.getIs_subscribed(),Constants.GENERAL_PREF_NAME);
         if (data.getImages() != null && data.getImages().size() != 0)
-            PrefManager.store(this, PrefManager.PersistenceKey.PROFILE_IMAGE, data.getImages().get(0).getUrl());
+            PrefManager.store(this, PrefManager.PersistenceKey.PROFILE_IMAGE, data.getImages().get(0).getUrl(), Constants.GENERAL_PREF_NAME);
         if (cbRememberMe.isChecked())
-            PrefManager.store(this, PrefManager.PersistenceKey.REMEMBER_ME, "true");
+            PrefManager.store(this, PrefManager.PersistenceKey.REMEMBER_ME, "true", Constants.GENERAL_PREF_NAME);
     }
 
     public boolean isEmailValid(String email) {

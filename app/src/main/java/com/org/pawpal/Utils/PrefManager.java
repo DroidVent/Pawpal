@@ -10,25 +10,25 @@ import android.content.SharedPreferences;
 public class PrefManager {
 
 
-    public static void clear(Context context) {
-        SharedPreferences settings = context.getSharedPreferences(Constants.PREF_NAME, 0);
+    public static void clear(Context context, String prefName) {
+        SharedPreferences settings = context.getSharedPreferences(prefName, 0);
         settings.edit().clear().commit();
     }
 
-    public static enum PersistenceKey {USER_ID,USER_NAME,PROFILE_ID, SEARCH_PAL_FILTERS, PROFILE_IMAGE, REMEMBER_ME, FCM_TOKEN}
+    public static enum PersistenceKey {USER_ID,USER_NAME,PROFILE_ID, SEARCH_PAL_FILTERS, PROFILE_IMAGE, REMEMBER_ME, FCM_TOKEN, IS_SUBSCRIBED}
 
 
-    public static void store(Context context, PersistenceKey key, String value){
+    public static void store(Context context, PersistenceKey key, String value, String prefName){
 
-        SharedPreferences settings = context.getSharedPreferences(Constants.PREF_NAME, 0);
+        SharedPreferences settings = context.getSharedPreferences(prefName, 0);
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(key.toString(), value);
         editor.commit();
     }
 
-    public static String retrieve(Context context, PersistenceKey key){
+    public static String retrieve(Context context, PersistenceKey key, String prefName){
 
-        SharedPreferences settings = context.getSharedPreferences(Constants.PREF_NAME, 0);
+        SharedPreferences settings = context.getSharedPreferences(prefName, 0);
         return settings.getString(key.toString(), "null");
     }
     public static void removeKeyPreference(Context  context, PersistenceKey key)

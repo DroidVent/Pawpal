@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -27,6 +29,7 @@ import com.org.pawpal.model.PostMessage;
 import com.org.pawpal.model.Profile;
 import com.org.pawpal.model.SearchPal;
 import com.org.pawpal.model.SendMessageResponse;
+import com.org.pawpal.model.SubscribeResponse;
 import com.org.pawpal.model.UserImages;
 import com.org.pawpal.model.UserProfileData;
 import com.squareup.picasso.Picasso;
@@ -58,6 +61,9 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
     private CompositeSubscription compositeSubscription;
     private SendMessageDialog dialogFragment;
     private String otherUserProfileId;
+    private Button btnSubscribe;
+    private RelativeLayout rlSubscribe;
+    private String isSubscribed;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,7 +90,7 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
 
         progressBar.setVisibility(View.VISIBLE);
 
-        String profileID = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID);
+        String profileID = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME);
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getOtherProfile(profileID, otherUserProfileId)
                 .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Profile>() {
                     @Override
@@ -220,16 +226,23 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         ivProfileImageView = (CircleImageView) findViewById(R.id.profile_image);
         addFavorite = (RelativeLayout) findViewById(R.id.rl_add_favorites);
         sendMessage = (RelativeLayout) findViewById(R.id.rl_send_msg);
+        rlSubscribe = (RelativeLayout)findViewById(R.id.rl_subscribe);
         compositeSubscription = new CompositeSubscription();
         tvMemberSince = (TextView) findViewById(R.id.tv_member_since_txt);
         tvLoginAt = (TextView) findViewById(R.id.tv_login_txt);
         tvName = (TextView) findViewById(R.id.tv_username);
+        btnSubscribe = (Button)findViewById(R.id.btn_subscribe);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
         tvLocation = (TextView) findViewById(R.id.tv_location);
         tvSize = (TextView) findViewById(R.id.tv_size);
         tvPeriod = (TextView) findViewById(R.id.tv_period);
         tvDescription = (TextView) findViewById(R.id.tv_description);
         tvUserType = (TextView) findViewById(R.id.tv_usertype);
+        isSubscribed = PrefManager.retrieve(this, PrefManager.PersistenceKey.IS_SUBSCRIBED,Constants.GENERAL_PREF_NAME);
+        if (isSubscribed.equalsIgnoreCase("Y"))
+            rlSubscribe.setVisibility(View.GONE);
+        else
+            rlSubscribe.setVisibility(View.VISIBLE);
         addFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -239,10 +252,56 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         sendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialog();
+                if (isSubscribed.equalsIgnoreCase("Y"))
+                    showDialog();
+                else
+                    Toast.makeText(PalProfileActivity.this, getString(R.string.subscribe), Toast.LENGTH_LONG).show();
+            }
+        });
+        btnSubscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isNetworkAvailable())
+                    subscribe();
+                else
+                    showSnackBar(getString(R.string.network_unavailable), (RelativeLayout) findViewById(R.id.parent_view));
             }
         });
     }
+
+    private void subscribe() {
+        progressBar.setVisibility(View.VISIBLE);
+        String profileID = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME);
+        compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().subscribe(profileID)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<SubscribeResponse>() {
+                    @Override
+                    public void onCompleted() {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        progressBar.setVisibility(View.GONE);
+                        showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
+                    }
+
+                    @Override
+                    public void onNext(SubscribeResponse response) {
+                        progressBar.setVisibility(View.GONE);
+                        if (Integer.valueOf(response.getCode()) == Constants.SUCCESS_CODE) {
+                            rlSubscribe.setVisibility(View.GONE);
+                            isSubscribed = "Y";
+                            PrefManager.store(PalProfileActivity.this, PrefManager.PersistenceKey.IS_SUBSCRIBED, "Y",Constants.GENERAL_PREF_NAME);
+                            Toast.makeText(PalProfileActivity.this, response.getMessage(), Toast.LENGTH_LONG).show();
+                        } else
+                            showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
+                    }
+                }));
+    }
+
     private void setToolBarTitle(String title){
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.findpal));
@@ -283,7 +342,7 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
 
     private void addAsFavorite() {
         progressBar.setVisibility(View.VISIBLE);
-        String profileID = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID);
+        String profileID = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME);
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().addFavorite(profileID, searchPal.getId())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -316,7 +375,7 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
         PostMessage postMessage = new PostMessage();
         postMessage.setMessage_text(message);
         postMessage.setUser_profile_id(searchPal.getId());
-        postMessage.setProfile_id(PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID));
+        postMessage.setProfile_id(PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME));
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().sendMessage(postMessage)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -336,9 +395,16 @@ public class PalProfileActivity extends BaseActivity implements OnItemCheckBoxLi
                     @Override
                     public void onNext(SendMessageResponse sendMessageResponse) {
                         progressBar.setVisibility(View.GONE);
+                        Log.e("Response code: ", sendMessageResponse.getCode());
                         if (Integer.valueOf(sendMessageResponse.getCode()) == Constants.SUCCESS_CODE) {
                             Toast.makeText(PalProfileActivity.this, sendMessageResponse.getMessage(), Toast.LENGTH_LONG).show();
-                        } else
+                        } else if (Integer.valueOf(sendMessageResponse.getCode()) == 201)
+                        {
+                            showSnackBar(sendMessageResponse.getMessage(), (RelativeLayout) findViewById(R.id.parent_view));
+                            PrefManager.store(PalProfileActivity.this, PrefManager.PersistenceKey.IS_SUBSCRIBED, "N",Constants.GENERAL_PREF_NAME);
+                        }
+
+                        else
                             showSnackBar(getString(R.string.wrong), (RelativeLayout) findViewById(R.id.parent_view));
                     }
                 }));

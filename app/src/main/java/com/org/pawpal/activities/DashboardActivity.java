@@ -74,11 +74,10 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
             registerDevice();
 
     }
-
     private void registerDevice() {
-        String profileId = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID);
+        String profileId = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME);
         String deviceId = getDeviceId();
-        String fcmToken = PrefManager.retrieve(this, PrefManager.PersistenceKey.FCM_TOKEN);
+        String fcmToken = PrefManager.retrieve(this, PrefManager.PersistenceKey.FCM_TOKEN,Constants.FCM_PREF_NAME);
         Log.e(TAG, "Refreshed token: " + fcmToken);
         boolean isEmpty = Utility.isEmptyString(fcmToken);
         if (!isEmpty)
@@ -114,14 +113,14 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
     @Override
     protected void onResume() {
         super.onResume();
-        String photo = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_IMAGE);
+        String photo = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_IMAGE,Constants.GENERAL_PREF_NAME);
         if (!photo.equals("null") && !photo.equals(""))
             Picasso.with(this).load(photo).fit().centerCrop().placeholder(R.mipmap.img_default).into(ivPhoto);
     }
 
     private void setUsername() {
 
-        String name = PrefManager.retrieve(this, PrefManager.PersistenceKey.USER_NAME);
+        String name = PrefManager.retrieve(this, PrefManager.PersistenceKey.USER_NAME,Constants.GENERAL_PREF_NAME);
         if (!name.equals("") && name != null)
             username.setText("Hi " + name);
     }
@@ -228,7 +227,7 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
             toolbar.setTitle(getString(R.string.pawfile));
             launchFragment(pawfile, "pawfile");
         } else if (groupPosition == 4) {
-            PrefManager.clear(this);
+            PrefManager.clear(this, Constants.GENERAL_PREF_NAME);
             launchMainScreen();
         }
     }

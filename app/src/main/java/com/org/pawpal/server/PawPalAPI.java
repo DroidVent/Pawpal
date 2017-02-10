@@ -19,6 +19,7 @@ import com.org.pawpal.model.Register;
 import com.org.pawpal.model.RegisterDeviceResponse;
 import com.org.pawpal.model.SearchPalResponse;
 import com.org.pawpal.model.SendMessageResponse;
+import com.org.pawpal.model.SubscribeResponse;
 import com.org.pawpal.model.UpdateProfile;
 import com.org.pawpal.model.User;
 
@@ -100,4 +101,7 @@ public interface PawPalAPI {
     @POST("user/register_device.json")
     Observable<RegisterDeviceResponse> registerDevice(@Field("profile_id") String profile_id, @Field("device_token") String device_token , @Field("device_id") String device_id, @Field("platform") String platform);
 
+    @FormUrlEncoded
+    @POST("user/subscribe_pal.json")
+    Observable<SubscribeResponse> subscribe(@Field("profile_id") String profile_id);
 }

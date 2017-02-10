@@ -304,7 +304,7 @@ public class CompleteProfile02Activity extends BaseActivity implements View.OnCl
 
     private void saveProfile() {
         progressBar.setVisibility(View.VISIBLE);
-        String profileID = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID);
+        String profileID = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID, Constants.GENERAL_PREF_NAME);
         postProfile.setProfileId(profileID);
         try {
             String json = new Gson().toJson(userImagesToSend);
@@ -329,7 +329,7 @@ public class CompleteProfile02Activity extends BaseActivity implements View.OnCl
                             progressBar.setVisibility(View.GONE);
                             if (Integer.valueOf(updateProfile.getCode()) == Constants.SUCCESS_CODE) {
                                 if (updateProfile.getUserData().getImages() != null && updateProfile.getUserData().getImages().size() != 0)
-                                    PrefManager.store(CompleteProfile02Activity.this, PrefManager.PersistenceKey.PROFILE_IMAGE, updateProfile.getUserData().getImages().get(0).getUrl());
+                                    PrefManager.store(CompleteProfile02Activity.this, PrefManager.PersistenceKey.PROFILE_IMAGE, updateProfile.getUserData().getImages().get(0).getUrl(),Constants.GENERAL_PREF_NAME);
                                 Toast.makeText(CompleteProfile02Activity.this, "Profile has been updated", Toast.LENGTH_LONG).show();
                             } else {
 

@@ -129,7 +129,7 @@ public class CompleteProfile01 extends Fragment implements View.OnClickListener,
 
         progressBar.setVisibility(View.VISIBLE);
 
-        String profileID = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID);
+        String profileID = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME);
         mCompositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getProfile(profileID)
                 .subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Profile>() {
                     @Override

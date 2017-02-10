@@ -297,7 +297,7 @@ public class FilterActivity extends BaseActivity implements OnItemCheckBoxListen
             {
                 Gson gson = new Gson();
                 String filters = gson.toJson((FilterPal)msg.obj);
-                PrefManager.store(FilterActivity.this, PrefManager.PersistenceKey.SEARCH_PAL_FILTERS, filters);
+                PrefManager.store(FilterActivity.this, PrefManager.PersistenceKey.SEARCH_PAL_FILTERS, filters, Constants.GENERAL_PREF_NAME);
             }
             super.handleMessage(msg);
         }

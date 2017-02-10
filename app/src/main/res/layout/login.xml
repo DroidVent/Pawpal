@@ -121,6 +121,12 @@
                     android:text="@string/signin_facebook"
                     android:textAllCaps="false"
                     android:textColor="@color/white" />
+                <com.facebook.login.widget.LoginButton
+                    android:id="@+id/login_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="gone" />
             </RelativeLayout>
 
         </LinearLayout>

@@ -9,9 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.org.pawpal.MyApplication;
@@ -28,6 +30,7 @@ import com.org.pawpal.interfaces.OnItemClickListener;
 import com.org.pawpal.model.FilterPal;
 import com.org.pawpal.model.SearchPal;
 import com.org.pawpal.model.SearchPalResponse;
+import com.org.pawpal.model.SubscribeResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +61,9 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
     private int pastVisiblesItems, visibleItemCount, totalItemCount;
     private int countItems;
     private TextView tvNoResult;
-    private RelativeLayout rlClearFilter;
+    private RelativeLayout rlClearFilter, rlSubscribe;
+    private Button btnSubscribe;
+    private String isSubscribed;
 
     @Nullable
     @Override
@@ -71,7 +76,7 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
     }
 
     private void retrieveFilters() {
-        String filters = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.SEARCH_PAL_FILTERS);
+        String filters = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.SEARCH_PAL_FILTERS,Constants.GENERAL_PREF_NAME);
         if (!filters.equals("null")) {
             Gson gson = new Gson();
             filterPal = gson.fromJson(filters, FilterPal.class);
@@ -92,7 +97,15 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
         linearLayoutManager = new LinearLayoutManager(getContext());
         progressBar = (ProgressBar)view.findViewById(R.id.progress_bar);
         rlClearFilter = (RelativeLayout)view.findViewById(R.id.rl_clear_filters);
+        rlSubscribe = (RelativeLayout)view.findViewById(R.id.rl_subscribe);
+        btnSubscribe = (Button)view.findViewById(R.id.btn_subscribe);
         rlClearFilter.setOnClickListener(this);
+        btnSubscribe.setOnClickListener(this);
+        isSubscribed = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.IS_SUBSCRIBED,Constants.GENERAL_PREF_NAME);
+        if (isSubscribed.equalsIgnoreCase("Y"))
+            rlSubscribe.setVisibility(View.GONE);
+        else
+            rlSubscribe.setVisibility(View.VISIBLE);
         setAdapter();
     }
 
@@ -134,10 +147,49 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
                 PrefManager.removeKeyPreference(getContext(), PrefManager.PersistenceKey.SEARCH_PAL_FILTERS);
                 filterPal = null;
                 filterPal = new FilterPal();
-                filterPal.setProfile_id(PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID));
+                filterPal.setProfile_id(PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME));
                 searchPal(filterPal,1, PAGE_LIMIT);
                 break;
+            case R.id.btn_subscribe:
+                if (baseActivity.isNetworkAvailable())
+                    subscribe();
+                else
+                    baseActivity.showSnackBar(getString(R.string.network_unavailable), (RelativeLayout) view.findViewById(R.id.parent_view));
+                break;
         }
+    }
+
+    private void subscribe() {
+        progressBar.setVisibility(View.VISIBLE);
+        String profileID = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME);
+        compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().subscribe(profileID)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<SubscribeResponse>() {
+                    @Override
+                    public void onCompleted() {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        progressBar.setVisibility(View.GONE);
+                        baseActivity.showSnackBar(getString(R.string.wrong), (RelativeLayout) view.findViewById(R.id.parent_view));
+                    }
+
+                    @Override
+                    public void onNext(SubscribeResponse response) {
+                        progressBar.setVisibility(View.GONE);
+                        if (Integer.valueOf(response.getCode()) == Constants.SUCCESS_CODE) {
+                            rlSubscribe.setVisibility(View.GONE);
+                            isSubscribed = "Y";
+                            PrefManager.store(getContext(), PrefManager.PersistenceKey.IS_SUBSCRIBED, "Y",Constants.GENERAL_PREF_NAME);
+                            Toast.makeText(getContext(), response.getMessage(), Toast.LENGTH_LONG).show();
+                        } else
+                            baseActivity.showSnackBar(getString(R.string.wrong), (RelativeLayout) view.findViewById(R.id.parent_view));
+                    }
+                }));
     }
 
     @Override
@@ -145,7 +197,7 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
         if (requestCode == Constants.FILTER_REQUEST) {
             if (resultCode == -1) {
                 filterPal = data.getParcelableExtra("filter");
-                filterPal.setProfile_id(PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID));
+                filterPal.setProfile_id(PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME));
                 searchPal(filterPal, 1, PAGE_LIMIT);
             }
         }
@@ -155,7 +207,7 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
     private void searchPal(FilterPal filterPal,int page, int limit) {
         progressBar.setVisibility(View.VISIBLE);
         if (baseActivity.isNetworkAvailable()) {
-            filterPal.setProfile_id(PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID));
+            filterPal.setProfile_id(PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME));
             /*if (palsList.size() != 0)
                 filterPal.setLast_profile_id(palsList.get(palsList.size()-1).getId());*/
             filterPal.setPage(PAGE_LIMIT);

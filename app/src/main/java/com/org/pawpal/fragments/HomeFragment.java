@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnIt
     private void getLatestMessages() {
         rvConversations.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        String profileId = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID);
+        String profileId = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME);
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getLatestConversation(profileId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -173,7 +173,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnIt
 
     private void getFavorites() {
         progressBar.setVisibility(View.VISIBLE);
-        String profileID = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID);
+        String profileID = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME);
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getFavorites(profileID)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -204,7 +204,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, OnIt
                 }));
     }
     private void getNewestPals() {
-        String profileID = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID);
+        String profileID = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME);
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getNewestPals(profileID)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

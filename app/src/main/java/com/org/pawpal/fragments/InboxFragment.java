@@ -81,7 +81,7 @@ public class InboxFragment extends Fragment implements OnMessagesListener, Swipe
         recyclerViewInbox.setVisibility(View.GONE);
         if (!swipeRefreshLayout.isRefreshing())
             showHideProgressBar(View.VISIBLE);
-        profileId = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID);
+        profileId = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME);
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getInboxMessages(profileId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

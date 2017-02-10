@@ -80,7 +80,7 @@ public class SentFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         recyclerViewSent.setVisibility(View.GONE);
         if (!swipeRefreshLayout.isRefreshing())
             showHideProgressBar(View.VISIBLE);
-        String profileId = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID);
+        String profileId = PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME);
         compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().getSentMessages(profileId)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

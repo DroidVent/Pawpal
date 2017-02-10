@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.org.pawpal.R;
+import com.org.pawpal.Utils.Constants;
 import com.org.pawpal.Utils.PrefManager;
 
 /**
@@ -24,7 +25,7 @@ public class LandingActivity extends BaseActivity {
         checkIfLoggedIn();
     }
     private void checkIfLoggedIn() {
-        String isRememberChecked = PrefManager.retrieve(this, PrefManager.PersistenceKey.REMEMBER_ME);
+        String isRememberChecked = PrefManager.retrieve(this, PrefManager.PersistenceKey.REMEMBER_ME, Constants.GENERAL_PREF_NAME);
         if (!isRememberChecked.equals("null") && !isRememberChecked.equals(""))
         {
             Intent intent = new Intent(this, DashboardActivity.class);
