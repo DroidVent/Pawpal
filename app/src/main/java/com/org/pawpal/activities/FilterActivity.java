@@ -33,6 +33,9 @@ import com.org.pawpal.model.PalActivitiyResponse;
 import com.org.pawpal.model.PalActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import rx.Observer;
@@ -62,7 +65,8 @@ public class FilterActivity extends BaseActivity implements OnItemCheckBoxListen
     private String frequency;
     private Button btnSave;
     private EditText etLocation;
-    private ArrayList<String> petSelectedActivitiesList;
+//    private ArrayList<String> petSelectedActivitiesList;
+    private HashMap<String, PalActivity> selectedActivities;
     private FilterPal filterPal;
     private CompositeSubscription compositeSubscription;
 
@@ -96,7 +100,8 @@ public class FilterActivity extends BaseActivity implements OnItemCheckBoxListen
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.filter));
         activities = new ArrayList<>();
-        petSelectedActivitiesList = new ArrayList<>();
+        selectedActivities = new LinkedHashMap<>();
+//        petSelectedActivitiesList = new ArrayList<>();
         etLocation = (EditText)findViewById(R.id.et_location);
         spinnerPalSize = (Spinner) findViewById(R.id.spinner_size);
         btnSave = (Button) findViewById(R.id.btn_search);
@@ -190,12 +195,14 @@ public class FilterActivity extends BaseActivity implements OnItemCheckBoxListen
     }
     @Override
     public void onItemCheck(int position) {
-        petSelectedActivitiesList.add(activities.get(position).getId());
+//        petSelectedActivitiesList.add(activities.get(position).getId());
+        selectedActivities.put(activities.get(position).getName(), activities.get(position));
     }
 
     @Override
     public void onItemUnCheck(int position) {
-        petSelectedActivitiesList.remove(activities.get(position));
+//        petSelectedActivitiesList.remove(activities.get(position));
+        selectedActivities.remove(activities.get(position).getName());
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -310,7 +317,8 @@ public class FilterActivity extends BaseActivity implements OnItemCheckBoxListen
     }
 
     private void setFilterValues() {
-        filterPal.setActivities(petSelectedActivitiesList);
+        List<PalActivity> valueList = Collections.list(Collections.enumeration(selectedActivities.values()));
+        filterPal.setActivities(valueList);
         filterPal.setFrequency(frequency);
         filterPal.setHost_period(period);
         filterPal.setPet_size(petSize);

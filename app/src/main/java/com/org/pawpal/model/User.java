@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class User {
-    private String code;
+    private int code;
     private String message;
     @SerializedName("data")
     private UserData userData;
@@ -28,11 +28,11 @@ public class User {
         this.message = message;
     }
 
-    public String getCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(int code) {
         this.code = code;
     }
 }

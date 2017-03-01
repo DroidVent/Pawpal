@@ -4,17 +4,20 @@ import com.org.pawpal.model.AddFavoriteResponse;
 import com.org.pawpal.model.FavoriteMessageResponse;
 import com.org.pawpal.model.FavoriteResponse;
 import com.org.pawpal.model.FilterPal;
+import com.org.pawpal.model.ForgotResponse;
 import com.org.pawpal.model.GetArchieveMessageResponse;
 import com.org.pawpal.model.GetInboxMessageResponse;
 import com.org.pawpal.model.GetLatestConversationResponse;
 import com.org.pawpal.model.GetSentMessageResponse;
 import com.org.pawpal.model.GetThreadMessageResponse;
 import com.org.pawpal.model.Login;
+import com.org.pawpal.model.LoginFb;
 import com.org.pawpal.model.NewestPalsResponse;
 import com.org.pawpal.model.PalActivitiyResponse;
 import com.org.pawpal.model.PostMessage;
 import com.org.pawpal.model.PostProfile;
 import com.org.pawpal.model.Profile;
+import com.org.pawpal.model.ProfileInfoResponse;
 import com.org.pawpal.model.Register;
 import com.org.pawpal.model.RegisterDeviceResponse;
 import com.org.pawpal.model.SearchPalResponse;
@@ -40,6 +43,9 @@ public interface PawPalAPI {
 
     @POST("auth/login.json")
     Call<User> loginUser(@Body Login user);
+
+    @POST("auth/login_with_facebook.json")
+    Call<User> loginFacebookUser(@Body LoginFb facebook);
 
     @POST("auth/register.json")
     Call<User> registerUser(@Body Register user);
@@ -104,4 +110,11 @@ public interface PawPalAPI {
     @FormUrlEncoded
     @POST("user/subscribe_pal.json")
     Observable<SubscribeResponse> subscribe(@Field("profile_id") String profile_id);
+
+    @FormUrlEncoded
+    @POST("user/forgot_password.json")
+    Call<ForgotResponse> forgotPassword(@Field("email") String email);
+
+    @GET("profile/get_user_personal_info.json")
+    Observable<ProfileInfoResponse> getProfilInfo(@Query("profile_id") String profile_id);
 }

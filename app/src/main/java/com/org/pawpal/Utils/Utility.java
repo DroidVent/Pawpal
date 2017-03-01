@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 
 import java.io.File;
@@ -68,12 +69,10 @@ public class Utility {
     }
 
     public static boolean isEmptyString(String text) {
-        if (text != null && !text.isEmpty())
-            return false;
-        else
+        if (TextUtils.isEmpty(text) || text.equals(""))
             return true;
+        return false;
     }
-
     public static String formatDate(String date) {
             String formatedDate;
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");

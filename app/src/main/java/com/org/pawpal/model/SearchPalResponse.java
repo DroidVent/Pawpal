@@ -11,6 +11,7 @@ import java.util.List;
 public class SearchPalResponse {
     private String code;
     private String message;
+    @SerializedName("pawl_count")
     private String pawl_count;
     @SerializedName("data")
     private List<SearchPal> searchPals;

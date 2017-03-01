@@ -77,7 +77,7 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
     private EditText etLat, etLongt, etAddress;
     private Button btnContinue, btnSearch, btnContinueToLogin;
     private GoogleMap mMap;
-    private String userType, name, nickname, email, phone, city, country, makaniNum, password, address = "0.0", lat = "0.0", longt;
+    private String userType, name, nickname, email, phone, city, country, makaniNum, password, address = "0.0", lat = "0.0", longt, fbId;
     private CheckBox cbTerms;
     private ProgressBar progressBar;
     private boolean success;
@@ -106,6 +106,7 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
         country = bundle.getString("country");
         makaniNum = bundle.getString("makani");
         password = bundle.getString("password");
+        fbId = bundle.getString(Constants.FB_ID);
     }
 
 
@@ -470,7 +471,7 @@ public class SignUpStep1Address extends BaseActivity implements OnMapReadyCallba
             hideKeyBoard();
             showHideProgressBar(View.VISIBLE);
             PawPalAPI pawPalAPI = MyApplication.getInstance().getPawPalAPI();
-            Register register = new Register(userType, name, nickname, email, phone, city, country, makaniNum, password, address, lat, longt);
+            Register register = new Register(userType, name, nickname, email, phone, city, country, makaniNum, password, address, lat, longt, fbId);
 
             Call<User> user = pawPalAPI.registerUser(register);
             user.enqueue(new Callback<User>() {

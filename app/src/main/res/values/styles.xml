@@ -10,7 +10,7 @@
 
     <style name="spinner_style">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:background">@mipmap/dropdown</item>
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">20dp</item>
@@ -22,7 +22,7 @@
 
     <style name="spinner_pet_style">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:background">@mipmap/dropdown</item>
         <item name="android:paddingRight">20dp</item>
         <item name="android:paddingTop">10dp</item>
@@ -31,7 +31,7 @@
     </style>
     <style name="spinner_pet_gender_style">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:background">@mipmap/dropdown</item>
         <item name="android:paddingRight">20dp</item>
         <item name="android:paddingTop">10dp</item>
@@ -41,7 +41,7 @@
     </style>
     <style name="spinner_host_period">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:background">@mipmap/dropdown</item>
         <item name="android:paddingRight">20dp</item>
         <item name="android:paddingTop">10dp</item>
@@ -50,7 +50,7 @@
     </style>
     <style name="spinner_frequency">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:background">@mipmap/dropdown</item>
         <item name="android:paddingRight">20dp</item>
         <item name="android:paddingTop">10dp</item>

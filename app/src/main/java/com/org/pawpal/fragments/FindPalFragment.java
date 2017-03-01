@@ -210,7 +210,7 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
             filterPal.setProfile_id(PrefManager.retrieve(getContext(), PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME));
             /*if (palsList.size() != 0)
                 filterPal.setLast_profile_id(palsList.get(palsList.size()-1).getId());*/
-            filterPal.setPage(PAGE_LIMIT);
+//            filterPal.setPage(PAGE_LIMIT);
             compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().searchPal(filterPal).subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<SearchPalResponse>() {
                         @Override
@@ -229,6 +229,7 @@ public class FindPalFragment extends Fragment implements View.OnClickListener, O
                         @Override
                         public void onNext(SearchPalResponse searchPalResponse) {
                             progressBar.setVisibility(View.GONE);
+                            tvNoResult.setVisibility(View.GONE);
                             loading = true;
                             if (Integer.valueOf(searchPalResponse.getCode()) == Constants.SUCCESS_CODE) {
                                 palsList.clear();

@@ -10,9 +10,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.facebook.login.LoginManager;
 import com.org.pawpal.MyApplication;
 import com.org.pawpal.R;
 import com.org.pawpal.Utils.Constants;
@@ -74,14 +77,14 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
             registerDevice();
 
     }
+
     private void registerDevice() {
-        String profileId = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID,Constants.GENERAL_PREF_NAME);
+        String profileId = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_ID, Constants.GENERAL_PREF_NAME);
         String deviceId = getDeviceId();
-        String fcmToken = PrefManager.retrieve(this, PrefManager.PersistenceKey.FCM_TOKEN,Constants.FCM_PREF_NAME);
+        String fcmToken = PrefManager.retrieve(this, PrefManager.PersistenceKey.FCM_TOKEN, Constants.FCM_PREF_NAME);
         Log.e(TAG, "Refreshed token: " + fcmToken);
         boolean isEmpty = Utility.isEmptyString(fcmToken);
-        if (!isEmpty)
-        {
+        if (!isEmpty) {
             compositeSubscription.add(MyApplication.getInstance().getPawPalAPI().registerDevice(profileId, fcmToken, deviceId, "android")
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -113,14 +116,14 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
     @Override
     protected void onResume() {
         super.onResume();
-        String photo = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_IMAGE,Constants.GENERAL_PREF_NAME);
+        String photo = PrefManager.retrieve(this, PrefManager.PersistenceKey.PROFILE_IMAGE, Constants.GENERAL_PREF_NAME);
         if (!photo.equals("null") && !photo.equals(""))
             Picasso.with(this).load(photo).fit().centerCrop().placeholder(R.mipmap.img_default).into(ivPhoto);
     }
 
     private void setUsername() {
 
-        String name = PrefManager.retrieve(this, PrefManager.PersistenceKey.USER_NAME,Constants.GENERAL_PREF_NAME);
+        String name = PrefManager.retrieve(this, PrefManager.PersistenceKey.USER_NAME, Constants.GENERAL_PREF_NAME);
         if (!name.equals("") && name != null)
             username.setText("Hi " + name);
     }
@@ -136,6 +139,9 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
     protected void onDestroy() {
         super.onDestroy();
         compositeSubscription.unsubscribe();
+        String id = PrefManager.retrieve(this, PrefManager.PersistenceKey.REMEMBER_ME, Constants.GENERAL_PREF_NAME);
+        if (id == "null")
+            LoginManager.getInstance().logOut();
     }
 
     public void launchFragment(Fragment fragment, String tag) {
@@ -165,12 +171,24 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
-            } else {
-                mDrawerLayout.openDrawer(Gravity.LEFT);
-            }
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (mDrawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                    mDrawerLayout.closeDrawer(Gravity.LEFT);
+                } else {
+                    mDrawerLayout.openDrawer(Gravity.LEFT);
+                }
+                break;
+            case R.id.info:
+                Intent intentInfo = new Intent(this, ProfileInfoActivity.class);
+                startActivity(intentInfo);
+                overridePendingTransition(R.anim.bottom_up, R.anim.bottom_down);
+                break;
+            case R.id.security:
+                Intent intentSecurity = new Intent(this, ChangePassword.class);
+                startActivity(intentSecurity);
+                overridePendingTransition(R.anim.bottom_up, R.anim.bottom_down);
+                break;
 
         }
         return super.onOptionsItemSelected(item);
@@ -227,8 +245,17 @@ public class DashboardActivity extends BaseActivity implements NavigationDrawerF
             toolbar.setTitle(getString(R.string.pawfile));
             launchFragment(pawfile, "pawfile");
         } else if (groupPosition == 4) {
+            LoginManager.getInstance().logOut();
             PrefManager.clear(this, Constants.GENERAL_PREF_NAME);
             launchMainScreen();
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.setting_menu, menu);
+        return true;
+    }
+
 }

@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.mukesh.countrypicker.fragments.CountryPicker;
 import com.mukesh.countrypicker.interfaces.CountryPickerListener;
 import com.org.pawpal.R;
+import com.org.pawpal.Utils.Constants;
 import com.org.pawpal.activities.BaseActivity;
 import com.org.pawpal.activities.SignUpStep1Address;
 import com.org.pawpal.custom.CustomTextView;
@@ -43,6 +44,9 @@ public class SignUpStep1 extends Fragment {
     private CheckBox cbAge;
     private String userType, name, nickname, email, phone, city, country, makaniNum, password, confirmPassword;
     private BaseActivity baseActivity;
+    private String bundleEmail = "";
+    private String bundleName = "";
+    private String bundleFbId = "";
 
     @Nullable
     @Override
@@ -51,7 +55,21 @@ public class SignUpStep1 extends Fragment {
             rootView = inflater.inflate(R.layout.signup_step1, container, false);
             init();
         }
+
         return rootView;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle != null)
+        {
+            bundleEmail = bundle.getString(Constants.EMAIL);
+            bundleName = bundle.getString(Constants.NAME);
+            bundleFbId = bundle.getString(Constants.FB_ID);
+        }
+
     }
 
     private void init() {
@@ -62,6 +80,12 @@ public class SignUpStep1 extends Fragment {
         etName = (EditText) rootView.findViewById(R.id.et_name);
         etNickName = (EditText) rootView.findViewById(R.id.et_nickname);
         etEmail = (EditText) rootView.findViewById(R.id.et_email);
+        if (!bundleEmail.isEmpty())
+        {
+            etEmail.setText(bundleEmail);
+            etName.setText(bundleName);
+        }
+
         etPhone = (EditText) rootView.findViewById(R.id.et_phone);
         etCity = (EditText) rootView.findViewById(R.id.et_city);
         etMakani = (EditText) rootView.findViewById(R.id.et_makani_number);
@@ -197,7 +221,7 @@ public class SignUpStep1 extends Fragment {
         mIntent.putExtra("registration", setBundle());
         startActivity(mIntent);
         getActivity().overridePendingTransition(R.anim.bottom_up, R.anim.bottom_down);
-        getActivity().finish();
+//        getActivity().finish();
     }
 
     private Bundle setBundle() {
@@ -211,6 +235,8 @@ public class SignUpStep1 extends Fragment {
         bundle.putString("country", country);
         bundle.putString("makani", makaniNum);
         bundle.putString("password", password);
+        bundle.putString(Constants.FB_ID, bundleFbId);
+
         return bundle;
     }
 

@@ -13,6 +13,9 @@ public class Constants {
     public static final String PUSH_NOTIFICATION = "push";
     public static final int NOTIFICATION_ID = 100;
     public static final String BUNDLE_NOTIFICATION_DATA = "notification_bundle";
+    public static final String EMAIL = "email";
+    public static final String NAME = "name";
+    public static final String FB_ID = "facebook_id";
     public static String ENDPOINT = "http://subdominio.pawpal.ae/fsilva_pawal/";
 
     public static int SUCCESS_CODE = 200;
@@ -23,6 +26,7 @@ public class Constants {
     public static int API_STATE_NOT_MATCHING_SERVER = 403;
     public static int SOMETHING_WENT_WRONG = 404;
     public static int CONTENT_NOT_FOUND  = 405;
+    public static int NEW_FB_USER  = 666;
 
     public static final int PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
 

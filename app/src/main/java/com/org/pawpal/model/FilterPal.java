@@ -9,7 +9,7 @@ import java.util.List;
  * Created by hp-pc on 26-12-2016.
  */
 
-public class FilterPal  implements Parcelable{
+public class FilterPal implements Parcelable{
     private String pet_size;
     private String host_period;
     private String frequency;
@@ -19,7 +19,13 @@ public class FilterPal  implements Parcelable{
     private int page;
     private String last_profile_id;
 
-    private List<String> activities;
+    private List<PalActivity> activities;
+
+
+    public FilterPal()
+    {
+
+    }
 
     protected FilterPal(Parcel in) {
         pet_size = in.readString();
@@ -28,12 +34,22 @@ public class FilterPal  implements Parcelable{
         profile_id = in.readString();
         lat = in.readString();
         lng = in.readString();
-        activities = in.createStringArrayList();
+        page = in.readInt();
+        last_profile_id = in.readString();
+        activities = in.createTypedArrayList(PalActivity.CREATOR);
     }
-    public FilterPal()
-    {
 
-    }
+    public static final Creator<FilterPal> CREATOR = new Creator<FilterPal>() {
+        @Override
+        public FilterPal createFromParcel(Parcel in) {
+            return new FilterPal(in);
+        }
+
+        @Override
+        public FilterPal[] newArray(int size) {
+            return new FilterPal[size];
+        }
+    };
 
     public int getPage() {
         return page;
@@ -51,23 +67,12 @@ public class FilterPal  implements Parcelable{
         this.last_profile_id = last_profile_id;
     }
 
-    public static final Creator<FilterPal> CREATOR = new Creator<FilterPal>() {
-        @Override
-        public FilterPal createFromParcel(Parcel in) {
-            return new FilterPal(in);
-        }
 
-        @Override
-        public FilterPal[] newArray(int size) {
-            return new FilterPal[size];
-        }
-    };
-
-    public List<String> getActivities() {
+    public List<PalActivity> getActivities() {
         return activities;
     }
 
-    public void setActivities(List<String> activities) {
+    public void setActivities(List<PalActivity> activities) {
         this.activities = activities;
     }
 
@@ -119,6 +124,7 @@ public class FilterPal  implements Parcelable{
         this.frequency = frequency;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -132,6 +138,8 @@ public class FilterPal  implements Parcelable{
         parcel.writeString(profile_id);
         parcel.writeString(lat);
         parcel.writeString(lng);
-        parcel.writeStringList(activities);
+        parcel.writeInt(page);
+        parcel.writeString(last_profile_id);
+        parcel.writeTypedList(activities);
     }
 }

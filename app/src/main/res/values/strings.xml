@@ -20,6 +20,7 @@
     <string name="city">City*</string>
     <string name="country">Country*</string>
     <string name="makani_number">Makani Number</string>
+    <string name="makani_number_mandatory">Makani Number*</string>
     <string name="set_password">Set a password</string>
     <string name="confirm_password">Confirm Password*</string>
     <string name="age_text">I\'m 18 years old</string>
@@ -110,6 +111,11 @@
         <item>Biweekly</item>
         <item>Monthly</item>
     </string-array>
-    <string name="facebook_app_id">254242885018649</string>
-    <string name="fb_login_protocol_scheme">fb254242885018649</string>
+    <!--<string name="facebook_app_id">662256077279517</string>-->
+    <string name="facebook_app_id">1861852334104153</string>
+    <!--<string name="fb_login_protocol_scheme">fb254242885018649</string>-->
+    <string name="forget_password">Forget Password</string>
+    <string name="submit">Submit</string>
+    <string name="profile_info">Personal Info</string>
+    <string name="change_password">Change Password</string>
 </resources>

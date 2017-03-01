@@ -16,8 +16,9 @@ public class Register {
     private String address;
     private String lat;
     private String lng;
+    private String fb_id;
 
-    public Register(String profile_type, String name, String nick_name, String email, String phone, String city, String country, String makani_number, String password, String address, String lat, String lng) {
+    public Register(String profile_type, String name, String nick_name, String email, String phone, String city, String country, String makani_number, String password, String address, String lat, String lng, String fb_id) {
         this.profile_type = profile_type;
         this.name = name;
         this.nick_name = nick_name;
@@ -30,6 +31,7 @@ public class Register {
         this.address = address;
         this.lat = lat;
         this.lng = lng;
+        this.fb_id = fb_id;
     }
 
     public String getProfile_type() {
@@ -126,5 +128,13 @@ public class Register {
 
     public void setLng(String lng) {
         this.lng = lng;
+    }
+
+    public String getFb_id() {
+        return fb_id;
+    }
+
+    public void setFb_id(String fb_id) {
+        this.fb_id = fb_id;
     }
 }

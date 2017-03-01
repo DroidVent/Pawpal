@@ -1,13 +1,21 @@
 apply plugin: 'com.android.application'
 android {
+ /*   signingConfigs {
+        config {
+            keyAlias 'pawpal'
+            keyPassword 'pawpal'
+            storeFile file('D:/Adeel Projects/keystore-pawpal.jks')
+            storePassword 'pawpal'
+        }
+    }*/
     compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    buildToolsVersion '23.0.3'
     defaultConfig {
         applicationId "com.org.pawpal"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 10
-        versionName "1.0.10"
+        versionCode 16
+        versionName "1.0.16"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -15,6 +23,8 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+//            signingConfig signingConfigs.config
         }
     }
 }
@@ -22,7 +32,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

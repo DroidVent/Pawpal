@@ -10,6 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.facebook.login.LoginManager;
+import com.org.pawpal.Utils.Constants;
+import com.org.pawpal.Utils.PrefManager;
+
 /**
  * Created by hp-pc on 25-11-2016.
  */
@@ -63,4 +67,11 @@ public class BaseActivity extends AppCompatActivity {
                 Settings.Secure.ANDROID_ID);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        String id = PrefManager.retrieve(this, PrefManager.PersistenceKey.REMEMBER_ME, Constants.GENERAL_PREF_NAME);
+        if (id == "null")
+            LoginManager.getInstance().logOut();
+    }
 }
